@@ -30,6 +30,20 @@ pytest_plugins = "tests_common.pytest_plugin"
 MONGO_IMAGE = "mongo:8.0"
 
 
+def pytest_sessionstart(session: pytest.Session) -> None:
+    # Pull the image via the Docker SDK (same daemon testcontainers uses via the
+    # mounted socket) before any test setup phase begins, so the session fixture
+    # only pays the ~5-10 s container-start cost inside the pytest-timeouts window.
+    # On cold CI cache the pull alone takes ~55 s and exhausts the 60 s budget.
+    # timeout=120 caps each socket read so a stalled Docker Hub raises
+    # ReadTimeout (suppressed) rather than hanging the entire session.
+    with contextlib.suppress(Exception):
+        import docker
+
+        with docker.from_env(timeout=120) as client:
+            client.images.pull(MONGO_IMAGE)
+
+
 def _wait_for_mongo_ready(url: str, timeout: int = 60) -> None:
     """Poll mongod via ``ping`` until it answers or the timeout expires.
 
