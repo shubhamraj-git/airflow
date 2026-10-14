@@ -373,6 +373,20 @@ ARG_VERBOSE = Arg(("-v", "--verbose"), help="Make logging output more verbose", 
 ARG_LOCAL = Arg(("-l", "--local"), help="Run the task using the LocalExecutor", action="store_true")
 ARG_POOL = Arg(("--pool",), "Resource pool to use")
 
+# news feed
+ARG_NEWS_SOURCE_ID = Arg(
+    ("--source-id",),
+    help="Sync only the news source with this id; may be given several times",
+    action="append",
+    metavar="ID",
+)
+
+ARG_NEWS_SYNC_FORCE = Arg(
+    ("--force",),
+    help="Sync every selected source now, even when its sync interval has not passed",
+    action="store_true",
+)
+
 # teams
 ARG_TEAM_NAME = Arg(("name",), help="Team name")
 ARG_TEAMS_DRY_RUN = Arg(
@@ -1684,6 +1698,21 @@ VARIABLES_COMMANDS = (
         args=(ARG_VAR_EXPORT, ARG_VERBOSE),
     ),
 )
+NEWS_FEED_COMMANDS = (
+    ActionCommand(
+        name="sync",
+        help="Fetch the remote news sources that are due and store their entries for the home page",
+        description=(
+            "Fetch every enabled remote news source (the public Apache Airflow feeds and the sources added "
+            "under Admin > News Feed) whose sync interval has passed, store their entries as news items and "
+            "record the outcome on each source. Schedule it often, for example every minute from cron or a "
+            "Kubernetes CronJob: a run with nothing due does not contact any host. Exits with an error when "
+            "any source failed."
+        ),
+        func=lazy_load_command("airflow.cli.commands.news_feed_command.news_feed_sync"),
+        args=(ARG_NEWS_SOURCE_ID, ARG_NEWS_SYNC_FORCE, ARG_VERBOSE),
+    ),
+)
 TEAMS_COMMANDS = (
     ActionCommand(
         name="create",
@@ -2204,6 +2233,11 @@ core_commands: list[CLICommand] = [
         name="teams",
         help="Manage teams",
         subcommands=TEAMS_COMMANDS,
+    ),
+    GroupCommand(
+        name="news-feed",
+        help="Manage the home page news feed",
+        subcommands=NEWS_FEED_COMMANDS,
     ),
     GroupCommand(
         name="jobs",

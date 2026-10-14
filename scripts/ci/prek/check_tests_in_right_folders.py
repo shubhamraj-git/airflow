@@ -61,6 +61,7 @@ POSSIBLE_TEST_FOLDERS = [
     "macros",
     "migrations",
     "models",
+    "news_feed",
     "notifications",
     "observability",
     "operators",
