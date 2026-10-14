@@ -124,6 +124,7 @@ class MenuItem(Enum):
     DEADLINES = "Deadlines"
     DOCS = "Docs"
     JOBS = "Jobs"
+    NEWS_FEED = "News Feed"
     PLUGINS = "Plugins"
     POOLS = "Pools"
     PROVIDERS = "Providers"

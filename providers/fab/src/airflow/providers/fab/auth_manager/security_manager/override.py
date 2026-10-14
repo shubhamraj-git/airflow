@@ -357,6 +357,8 @@ class FabAirflowSecurityManagerOverride(AirflowSecurityManagerV2):
         (permissions.ACTION_CAN_READ, permissions.RESOURCE_AUDIT_LOG_ALL),
         (permissions.ACTION_CAN_READ, permissions.RESOURCE_IMPORT_ERROR_ALL),
         (permissions.ACTION_CAN_READ, permissions.RESOURCE_REPARSE_ALL),
+        (permissions.ACTION_CAN_READ, permissions.RESOURCE_NEWS_FEED),
+        (permissions.ACTION_CAN_ACCESS_MENU, permissions.RESOURCE_NEWS_FEED),
         (permissions.ACTION_CAN_READ, permissions.RESOURCE_TASK_RESCHEDULE),
         (permissions.ACTION_CAN_ACCESS_MENU, permissions.RESOURCE_TASK_RESCHEDULE),
         (permissions.ACTION_CAN_READ, permissions.RESOURCE_TRIGGER),

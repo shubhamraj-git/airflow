@@ -45,6 +45,7 @@ RESOURCE_IMPORT_ERROR_ALL = "All Import Errors"
 RESOURCE_JOB = "Jobs"
 RESOURCE_MY_PASSWORD = "My Password"
 RESOURCE_MY_PROFILE = "My Profile"
+RESOURCE_NEWS_FEED = "News Feed"
 RESOURCE_PASSWORD = "Passwords"
 RESOURCE_PERMISSION = "Permission Views"  # Refers to a Perm <-> View mapping, not an MVC View.
 RESOURCE_PLUGIN = "Plugins"

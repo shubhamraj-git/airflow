@@ -27,7 +27,9 @@ RESOURCE_DETAILS_MODULE = "airflow.api_fastapi.auth.managers.models.resource_det
 ACCESS_VIEW_SHIM_MODULE = "airflow.providers.common.compat.security.access_view"
 
 
-@pytest.mark.parametrize("member_name", ["IMPORT_ERRORS_ALL", "AUDIT_LOGS_ALL", "REPARSE_ALL"])
+@pytest.mark.parametrize(
+    "member_name", ["IMPORT_ERRORS_ALL", "AUDIT_LOGS_ALL", "REPARSE_ALL", "NEWS_FEED_MANAGE"]
+)
 def test_resolves_to_the_core_access_view_member_or_none(member_name):
     """The shim mirrors the running Airflow version: the ``AccessView`` member on an Airflow version that
     defines it (>= 3.4.0), otherwise ``None``. Kept version-agnostic so it holds
@@ -60,6 +62,7 @@ def test_is_none_on_older_core_without_the_member():
         assert reloaded.IMPORT_ERRORS_ALL_ACCESS_VIEW is None
         assert reloaded.AUDIT_LOGS_ALL_ACCESS_VIEW is None
         assert reloaded.REPARSE_ALL_ACCESS_VIEW is None
+        assert reloaded.NEWS_FEED_MANAGE_ACCESS_VIEW is None
 
     # Restore the module against the real core so later imports see the real value.
     importlib.reload(importlib.import_module(ACCESS_VIEW_SHIM_MODULE))

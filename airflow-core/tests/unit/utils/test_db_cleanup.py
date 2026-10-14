@@ -1200,6 +1200,8 @@ class TestDBCleanup:
             "dag_warning",  # self-maintaining
             "connection",  # leave alone
             "slot_pool",  # leave alone
+            "news_item",  # admin-managed content, leave alone
+            "news_source",  # admin-managed content, leave alone
             "dag_schedule_asset_reference",  # leave alone for now
             "dag_schedule_asset_alias_reference",  # leave alone for now
             "dag_schedule_asset_name_reference",  # leave alone for now

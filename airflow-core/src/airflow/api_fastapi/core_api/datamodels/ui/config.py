@@ -40,6 +40,10 @@ class ConfigResponse(BaseModel):
     external_log_name: str | None = None
     theme: Theme | None
     multi_team: bool
+    news_feed_enabled: bool
+    news_feed_allow_remote_sources: bool
+    news_feed_allow_public_airflow_feeds: bool
+    news_feed_max_entries: int
     rerun_with_latest_version: bool | None = None
 
     @field_serializer("theme")

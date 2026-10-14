@@ -60,6 +60,7 @@ from airflow.providers.common.compat.sdk import AirflowException, conf
 from airflow.providers.common.compat.security.access_view import (
     AUDIT_LOGS_ALL_ACCESS_VIEW,
     IMPORT_ERRORS_ALL_ACCESS_VIEW,
+    NEWS_FEED_MANAGE_ACCESS_VIEW,
     REPARSE_ALL_ACCESS_VIEW,
 )
 from airflow.providers.fab.auth_manager.models import Permission, Role, User
@@ -86,6 +87,7 @@ from airflow.providers.fab.www.security.permissions import (
     RESOURCE_IMPORT_ERROR,
     RESOURCE_IMPORT_ERROR_ALL,
     RESOURCE_JOB,
+    RESOURCE_NEWS_FEED,
     RESOURCE_PLUGIN,
     RESOURCE_POOL,
     RESOURCE_PROVIDER,
@@ -158,14 +160,16 @@ _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE = {
 }
 
 # ``AccessView.IMPORT_ERRORS_ALL`` and ``AccessView.AUDIT_LOGS_ALL`` only exist on
-# Airflow >= 3.4.0, and ``AccessView.REPARSE_ALL`` in a later version; the compat shim yields ``None``
-# on older Airflow versions so this provider still imports there.
+# Airflow >= 3.4.0, ``AccessView.REPARSE_ALL`` and ``AccessView.NEWS_FEED_MANAGE`` in later versions;
+# the compat shim yields ``None`` on older Airflow versions so this provider still imports there.
 if IMPORT_ERRORS_ALL_ACCESS_VIEW is not None:
     _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE[IMPORT_ERRORS_ALL_ACCESS_VIEW] = RESOURCE_IMPORT_ERROR_ALL
 if AUDIT_LOGS_ALL_ACCESS_VIEW is not None:
     _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE[AUDIT_LOGS_ALL_ACCESS_VIEW] = RESOURCE_AUDIT_LOG_ALL
 if REPARSE_ALL_ACCESS_VIEW is not None:
     _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE[REPARSE_ALL_ACCESS_VIEW] = RESOURCE_REPARSE_ALL
+if NEWS_FEED_MANAGE_ACCESS_VIEW is not None:
+    _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE[NEWS_FEED_MANAGE_ACCESS_VIEW] = RESOURCE_NEWS_FEED
 
 _MAP_MENU_ITEM_TO_FAB_RESOURCE_TYPE = {
     MenuItem.ASSETS: RESOURCE_ASSET,
@@ -191,6 +195,11 @@ if AIRFLOW_V_3_1_PLUS:
 
 if hasattr(MenuItem, "DEADLINES"):
     _MAP_MENU_ITEM_TO_FAB_RESOURCE_TYPE[MenuItem.DEADLINES] = RESOURCE_DAG_RUN
+
+# The admin page behind this entry only manages the feed, so it rides on the same resource as the
+# manage permission; no "News Feed" resource would exist otherwise and the entry would vanish.
+if hasattr(MenuItem, "NEWS_FEED"):
+    _MAP_MENU_ITEM_TO_FAB_RESOURCE_TYPE[MenuItem.NEWS_FEED] = RESOURCE_NEWS_FEED
 
 # Dag bundle visibility rides on Dag access -- a bundle is shown to a user who can read a Dag that
 # came from it -- so the menu entry is gated the same way the Dags entry is. Without a mapping the

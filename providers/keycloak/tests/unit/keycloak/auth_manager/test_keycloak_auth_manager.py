@@ -1033,6 +1033,7 @@ class TestKeycloakAuthManager:
             ("AUDIT_LOGS_ALL", "True", "AdminView#GET"),
             ("IMPORT_ERRORS_ALL", "True", "AdminView#GET"),
             ("REPARSE_ALL", "True", "AdminView#GET"),
+            ("NEWS_FEED_MANAGE", "True", "AdminView#GET"),
             ("AUDIT_LOGS_ALL", "False", "View#GET"),
             ("IMPORT_ERRORS", "True", "View#GET"),
             ("PLUGINS", "True", "View#GET"),

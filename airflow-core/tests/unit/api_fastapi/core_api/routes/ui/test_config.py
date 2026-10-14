@@ -69,6 +69,10 @@ expected_config_response = {
     "external_log_name": None,
     "theme": THEME,
     "multi_team": False,
+    "news_feed_enabled": True,
+    "news_feed_allow_remote_sources": True,
+    "news_feed_allow_public_airflow_feeds": True,
+    "news_feed_max_entries": 20,
     "rerun_with_latest_version": None,
 }
 

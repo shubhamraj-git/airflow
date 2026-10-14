@@ -111,6 +111,9 @@ class AccessView(Enum):
     # authorize on, so they get their own admin-by-default view.
     IMPORT_ERRORS_ALL = "IMPORT_ERRORS_ALL"
     JOBS = "JOBS"
+    # Managing the home page news feed (items and remote sources): what is written there is
+    # shown to every user, so it gets its own admin-by-default view.
+    NEWS_FEED_MANAGE = "NEWS_FEED_MANAGE"
     PLUGINS = "PLUGINS"
     PROVIDERS = "PROVIDERS"
     # Reparsing a file with no registered Dag: there is no per-Dag key to

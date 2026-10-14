@@ -1136,6 +1136,164 @@ class NewTaskResponse(BaseModel):
     task_display_name: Annotated[str, Field(title="Task Display Name")]
 
 
+class Author(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="Who the item is from, such as a team name; ``null`` shows this deployment.",
+            max_length=250,
+            min_length=1,
+            title="Author",
+        ),
+    ]
+
+
+class Url(RootModel[str]):
+    root: Annotated[str, Field(max_length=2000, min_length=1, title="Url")]
+
+
+class Title(RootModel[str]):
+    root: Annotated[str, Field(max_length=250, min_length=1, title="Title")]
+
+
+class Author1(RootModel[str]):
+    root: Annotated[str, Field(max_length=250, min_length=1, title="Author")]
+
+
+class NewsItemPriority(str, Enum):
+    """
+    Priority of a news item; P0 is the most urgent.
+    """
+
+    P0 = "P0"
+    P1 = "P1"
+    P2 = "P2"
+
+
+class NewsItemResponse(BaseModel):
+    """
+    News item serializer for responses.
+    """
+
+    id: Annotated[UUID, Field(title="Id")]
+    title: Annotated[str, Field(title="Title")]
+    author: Annotated[str | None, Field(title="Author")]
+    priority: NewsItemPriority
+    body: Annotated[str | None, Field(title="Body")]
+    url: Annotated[str | None, Field(title="Url")]
+    published_at: Annotated[datetime, Field(title="Published At")]
+    expires_at: Annotated[datetime | None, Field(title="Expires At")]
+    source_id: Annotated[UUID | None, Field(title="Source Id")]
+    fetched_at: Annotated[datetime | None, Field(title="Fetched At")]
+    created_by: Annotated[str | None, Field(title="Created By")]
+    created_at: Annotated[datetime, Field(title="Created At")]
+    updated_at: Annotated[datetime, Field(title="Updated At")]
+
+
+class TtlDays(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Entries older than this many days are not shown; ``null`` keeps all.",
+            ge=1,
+            title="Ttl Days",
+        ),
+    ] = 30
+
+
+class NewsSourceBody(BaseModel):
+    """
+    News source serializer for post bodies.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    url: Annotated[str, Field(max_length=500, min_length=1, title="Url")]
+    label: Annotated[str, Field(max_length=250, min_length=1, title="Label")]
+    enabled: Annotated[bool | None, Field(title="Enabled")] = False
+    ttl_days: Annotated[
+        TtlDays | None,
+        Field(
+            description="Entries older than this many days are not shown; ``null`` keeps all.",
+            title="Ttl Days",
+            validate_default=True,
+        ),
+    ] = 30
+    max_entries: Annotated[
+        int | None,
+        Field(
+            description="Only the newest this many entries of the source are kept and shown.",
+            ge=1,
+            le=100,
+            title="Max Entries",
+        ),
+    ] = 10
+    sync_interval_minutes: Annotated[
+        int | None,
+        Field(
+            description="Minutes ``airflow news-feed sync`` waits after a fetch before fetching the source again.",
+            ge=5,
+            title="Sync Interval Minutes",
+        ),
+    ] = 60
+
+
+class Url2(RootModel[str]):
+    root: Annotated[str, Field(max_length=500, min_length=1, title="Url")]
+
+
+class Label(RootModel[str]):
+    root: Annotated[str, Field(max_length=250, min_length=1, title="Label")]
+
+
+class TtlDays1(RootModel[int]):
+    root: Annotated[int, Field(ge=1, title="Ttl Days")]
+
+
+class MaxEntries(RootModel[int]):
+    root: Annotated[int, Field(ge=1, le=100, title="Max Entries")]
+
+
+class SyncIntervalMinutes(RootModel[int]):
+    root: Annotated[int, Field(ge=5, title="Sync Interval Minutes")]
+
+
+class NewsSourcePatchBody(BaseModel):
+    """
+    News source serializer for patch bodies.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    url: Annotated[Url2 | None, Field(title="Url")] = None
+    label: Annotated[Label | None, Field(title="Label")] = None
+    enabled: Annotated[bool | None, Field(title="Enabled")] = None
+    ttl_days: Annotated[TtlDays1 | None, Field(title="Ttl Days")] = None
+    max_entries: Annotated[MaxEntries | None, Field(title="Max Entries")] = None
+    sync_interval_minutes: Annotated[SyncIntervalMinutes | None, Field(title="Sync Interval Minutes")] = None
+
+
+class NewsSourceResponse(BaseModel):
+    """
+    News source serializer for responses.
+    """
+
+    id: Annotated[UUID, Field(title="Id")]
+    url: Annotated[str, Field(title="Url")]
+    label: Annotated[str, Field(title="Label")]
+    enabled: Annotated[bool, Field(title="Enabled")]
+    ttl_days: Annotated[int | None, Field(title="Ttl Days")]
+    max_entries: Annotated[int, Field(title="Max Entries")]
+    sync_interval_minutes: Annotated[int, Field(title="Sync Interval Minutes")]
+    last_fetched_at: Annotated[datetime | None, Field(title="Last Fetched At")]
+    last_fetch_error: Annotated[str | None, Field(title="Last Fetch Error")]
+    created_by: Annotated[str | None, Field(title="Created By")]
+    created_at: Annotated[datetime, Field(title="Created At")]
+    updated_at: Annotated[datetime, Field(title="Updated At")]
+
+
 class PluginAppliesToResponse(RootModel[dict[str, list[str]]]):
     """
     Serializer for the optional scoping criteria of a UI plugin.
@@ -2533,6 +2691,70 @@ class JobCollectionResponse(BaseModel):
     """
 
     jobs: Annotated[list[JobResponse], Field(title="Jobs")]
+    total_entries: Annotated[int, Field(title="Total Entries")]
+
+
+class NewsItemBody(BaseModel):
+    """
+    News item serializer for post bodies.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    title: Annotated[str, Field(max_length=250, min_length=1, title="Title")]
+    author: Annotated[
+        Author | None,
+        Field(
+            description="Who the item is from, such as a team name; ``null`` shows this deployment.",
+            title="Author",
+        ),
+    ] = None
+    priority: Annotated[
+        NewsItemPriority | None, Field(description="P0 (critical), P1 (important) or P2 (normal).")
+    ] = "P2"
+    body: Annotated[str | None, Field(description="Markdown body.", title="Body")] = None
+    url: Annotated[Url | None, Field(title="Url")] = None
+    published_at: Annotated[datetime | None, Field(description="Defaults to now.", title="Published At")] = (
+        None
+    )
+    expires_at: Annotated[
+        datetime | None, Field(description="``null`` never expires.", title="Expires At")
+    ] = None
+
+
+class NewsItemCollectionResponse(BaseModel):
+    """
+    News item collection serializer for responses.
+    """
+
+    news_items: Annotated[list[NewsItemResponse], Field(title="News Items")]
+    total_entries: Annotated[int, Field(title="Total Entries")]
+
+
+class NewsItemPatchBody(BaseModel):
+    """
+    News item serializer for patch bodies.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    title: Annotated[Title | None, Field(title="Title")] = None
+    author: Annotated[Author1 | None, Field(title="Author")] = None
+    priority: NewsItemPriority | None = None
+    body: Annotated[str | None, Field(title="Body")] = None
+    url: Annotated[Url | None, Field(title="Url")] = None
+    published_at: Annotated[datetime | None, Field(title="Published At")] = None
+    expires_at: Annotated[datetime | None, Field(title="Expires At")] = None
+
+
+class NewsSourceCollectionResponse(BaseModel):
+    """
+    News source collection serializer for responses.
+    """
+
+    news_sources: Annotated[list[NewsSourceResponse], Field(title="News Sources")]
     total_entries: Annotated[int, Field(title="Total Entries")]
 
 

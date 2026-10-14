@@ -50,6 +50,7 @@ with suppress(ImportError):
         DagDetails,
     )
 
+from airflow.providers.common.compat.security.access_view import NEWS_FEED_MANAGE_ACCESS_VIEW
 from airflow.providers.common.compat.security.permissions import (
     RESOURCE_ASSET,
     RESOURCE_ASSET_ALIAS,
@@ -70,6 +71,7 @@ from airflow.providers.fab.www.security.permissions import (
     RESOURCE_DAG_RUN,
     RESOURCE_DOCS,
     RESOURCE_JOB,
+    RESOURCE_NEWS_FEED,
     RESOURCE_PLUGIN,
     RESOURCE_PROVIDER,
     RESOURCE_TASK_INSTANCE,
@@ -825,6 +827,16 @@ class TestFabAuthManager:
                 [(ACTION_CAN_READ, RESOURCE_DOCS)],
                 False,
             ),
+            # Managing the news feed maps onto its own resource; menu access alone is not enough.
+            # Guarded because this provider also runs against Airflow versions predating the view.
+            *(
+                [
+                    (NEWS_FEED_MANAGE_ACCESS_VIEW, [(ACTION_CAN_READ, RESOURCE_NEWS_FEED)], True),
+                    (NEWS_FEED_MANAGE_ACCESS_VIEW, [(ACTION_CAN_ACCESS_MENU, RESOURCE_NEWS_FEED)], False),
+                ]
+                if NEWS_FEED_MANAGE_ACCESS_VIEW is not None
+                else []
+            ),
         ],
     )
     def test_is_authorized_view(self, access_view, user_permissions, expected_result, auth_manager):
@@ -902,6 +914,18 @@ class TestFabAuthManager:
                     )
                 ]
                 if hasattr(MenuItem, "DEADLINES")
+                else []
+            ),
+            *(
+                [
+                    (
+                        [MenuItem.NEWS_FEED],
+                        [(ACTION_CAN_ACCESS_MENU, RESOURCE_NEWS_FEED)],
+                        [MenuItem.NEWS_FEED],
+                    ),
+                    ([MenuItem.NEWS_FEED], [(ACTION_CAN_READ, RESOURCE_NEWS_FEED)], []),
+                ]
+                if hasattr(MenuItem, "NEWS_FEED")
                 else []
             ),
             # Dag bundle visibility rides on Dag access, so the menu entry is mapped onto

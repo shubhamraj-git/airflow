@@ -40,6 +40,10 @@ API_CONFIG_KEYS = [
     "default_wrap",
     "auto_refresh_interval",
     "require_confirmation_dag_change",
+    "news_feed_enabled",
+    "news_feed_allow_remote_sources",
+    "news_feed_allow_public_airflow_feeds",
+    "news_feed_max_entries",
 ]
 
 

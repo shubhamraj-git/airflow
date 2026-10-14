@@ -362,7 +362,12 @@ class TestSimpleAuthManager:
 
     @pytest.mark.parametrize(
         "access_view",
-        [AccessView.IMPORT_ERRORS_ALL, AccessView.AUDIT_LOGS_ALL, AccessView.REPARSE_ALL],
+        [
+            AccessView.IMPORT_ERRORS_ALL,
+            AccessView.AUDIT_LOGS_ALL,
+            AccessView.REPARSE_ALL,
+            AccessView.NEWS_FEED_MANAGE,
+        ],
     )
     @pytest.mark.parametrize(
         ("role", "result"),
@@ -378,8 +383,8 @@ class TestSimpleAuthManager:
 
         Every other view is readable by a viewer (asserted above); these gate records that
         carry no other authorization key -- import errors for files with no registered Dag,
-        audit log rows not tied to a Dag, and reparsing a file with no registered Dag -- so
-        they must not ride on viewer access.
+        audit log rows not tied to a Dag, reparsing a file with no registered Dag, and the
+        news feed shown to every user -- so they must not ride on viewer access.
         """
         assert (
             auth_manager.is_authorized_view(

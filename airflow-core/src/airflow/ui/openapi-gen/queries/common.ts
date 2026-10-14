@@ -1,7 +1,7 @@
 // generated with @7nohe/openapi-react-query-codegen@1.6.2 
 
 import { UseQueryResult } from "@tanstack/react-query";
-import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagParsingService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
+import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagParsingService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, NewsFeedService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
 import { DagRunState, DagSchedulingState, ReprocessBehavior } from "../requests/types.gen";
 export type AssetServiceGetAssetsDefaultResponse = Awaited<ReturnType<typeof AssetService.getAssets>>;
 export type AssetServiceGetAssetsQueryResult<TData = AssetServiceGetAssetsDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
@@ -888,6 +888,30 @@ export const UseJobServiceGetJobsKeyFn = ({ dagId, endDateGt, endDateGte, endDat
   startDateLte?: string;
   teams?: string[];
 } = {}, queryKey?: Array<unknown>) => [useJobServiceGetJobsKey, ...(queryKey ?? [{ dagId, endDateGt, endDateGte, endDateLt, endDateLte, executorClass, hostname, isAlive, jobState, jobType, limit, offset, orderBy, startDateGt, startDateGte, startDateLt, startDateLte, teams }])];
+export type NewsFeedServiceGetNewsItemsDefaultResponse = Awaited<ReturnType<typeof NewsFeedService.getNewsItems>>;
+export type NewsFeedServiceGetNewsItemsQueryResult<TData = NewsFeedServiceGetNewsItemsDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useNewsFeedServiceGetNewsItemsKey = "NewsFeedServiceGetNewsItems";
+export const UseNewsFeedServiceGetNewsItemsKeyFn = ({ includeInactive, limit, offset, orderBy, remote }: {
+  includeInactive?: boolean;
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+  remote?: boolean;
+} = {}, queryKey?: Array<unknown>) => [useNewsFeedServiceGetNewsItemsKey, ...(queryKey ?? [{ includeInactive, limit, offset, orderBy, remote }])];
+export type NewsFeedServiceGetNewsItemDefaultResponse = Awaited<ReturnType<typeof NewsFeedService.getNewsItem>>;
+export type NewsFeedServiceGetNewsItemQueryResult<TData = NewsFeedServiceGetNewsItemDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useNewsFeedServiceGetNewsItemKey = "NewsFeedServiceGetNewsItem";
+export const UseNewsFeedServiceGetNewsItemKeyFn = ({ newsItemId }: {
+  newsItemId: string;
+}, queryKey?: Array<unknown>) => [useNewsFeedServiceGetNewsItemKey, ...(queryKey ?? [{ newsItemId }])];
+export type NewsFeedServiceGetNewsSourcesDefaultResponse = Awaited<ReturnType<typeof NewsFeedService.getNewsSources>>;
+export type NewsFeedServiceGetNewsSourcesQueryResult<TData = NewsFeedServiceGetNewsSourcesDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useNewsFeedServiceGetNewsSourcesKey = "NewsFeedServiceGetNewsSources";
+export const UseNewsFeedServiceGetNewsSourcesKeyFn = ({ limit, offset, orderBy }: {
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+} = {}, queryKey?: Array<unknown>) => [useNewsFeedServiceGetNewsSourcesKey, ...(queryKey ?? [{ limit, offset, orderBy }])];
 export type PluginServiceGetPluginsDefaultResponse = Awaited<ReturnType<typeof PluginService.getPlugins>>;
 export type PluginServiceGetPluginsQueryResult<TData = PluginServiceGetPluginsDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
 export const usePluginServiceGetPluginsKey = "PluginServiceGetPlugins";
@@ -1294,6 +1318,8 @@ export type DagServiceFavoriteDagMutationResult = Awaited<ReturnType<typeof DagS
 export type DagServiceUnfavoriteDagMutationResult = Awaited<ReturnType<typeof DagService.unfavoriteDag>>;
 export type TaskInstanceServiceGetTaskInstancesBatchMutationResult = Awaited<ReturnType<typeof TaskInstanceService.getTaskInstancesBatch>>;
 export type TaskInstanceServicePostClearTaskInstancesMutationResult = Awaited<ReturnType<typeof TaskInstanceService.postClearTaskInstances>>;
+export type NewsFeedServicePostNewsItemMutationResult = Awaited<ReturnType<typeof NewsFeedService.postNewsItem>>;
+export type NewsFeedServicePostNewsSourceMutationResult = Awaited<ReturnType<typeof NewsFeedService.postNewsSource>>;
 export type PoolServicePostPoolMutationResult = Awaited<ReturnType<typeof PoolService.postPool>>;
 export type XcomServiceCreateXcomEntryMutationResult = Awaited<ReturnType<typeof XcomService.createXcomEntry>>;
 export type VariableServicePostVariableMutationResult = Awaited<ReturnType<typeof VariableService.postVariable>>;
@@ -1319,6 +1345,8 @@ export type TaskInstanceServicePatchTaskGroupInstancesDryRunMutationResult = Awa
 export type TaskInstanceServicePatchTaskInstanceDryRunByMapIndexMutationResult = Awaited<ReturnType<typeof TaskInstanceService.patchTaskInstanceDryRunByMapIndex>>;
 export type TaskInstanceServicePatchTaskInstanceDryRunMutationResult = Awaited<ReturnType<typeof TaskInstanceService.patchTaskInstanceDryRun>>;
 export type TaskInstanceServiceUpdateHitlDetailMutationResult = Awaited<ReturnType<typeof TaskInstanceService.updateHitlDetail>>;
+export type NewsFeedServicePatchNewsItemMutationResult = Awaited<ReturnType<typeof NewsFeedService.patchNewsItem>>;
+export type NewsFeedServicePatchNewsSourceMutationResult = Awaited<ReturnType<typeof NewsFeedService.patchNewsSource>>;
 export type PoolServicePatchPoolMutationResult = Awaited<ReturnType<typeof PoolService.patchPool>>;
 export type PoolServiceBulkPoolsMutationResult = Awaited<ReturnType<typeof PoolService.bulkPools>>;
 export type TaskStateStoreServicePatchTaskStateStoreMutationResult = Awaited<ReturnType<typeof TaskStateStoreService.patchTaskStateStore>>;
@@ -1332,6 +1360,8 @@ export type ConnectionServiceDeleteConnectionMutationResult = Awaited<ReturnType
 export type DagRunServiceDeleteDagRunMutationResult = Awaited<ReturnType<typeof DagRunService.deleteDagRun>>;
 export type DagServiceDeleteDagMutationResult = Awaited<ReturnType<typeof DagService.deleteDag>>;
 export type TaskInstanceServiceDeleteTaskInstanceMutationResult = Awaited<ReturnType<typeof TaskInstanceService.deleteTaskInstance>>;
+export type NewsFeedServiceDeleteNewsItemMutationResult = Awaited<ReturnType<typeof NewsFeedService.deleteNewsItem>>;
+export type NewsFeedServiceDeleteNewsSourceMutationResult = Awaited<ReturnType<typeof NewsFeedService.deleteNewsSource>>;
 export type PoolServiceDeletePoolMutationResult = Awaited<ReturnType<typeof PoolService.deletePool>>;
 export type AssetStateStoreServiceClearAssetStateStoreMutationResult = Awaited<ReturnType<typeof AssetStateStoreService.clearAssetStateStore>>;
 export type AssetStateStoreServiceDeleteAssetStateStoreMutationResult = Awaited<ReturnType<typeof AssetStateStoreService.deleteAssetStateStore>>;

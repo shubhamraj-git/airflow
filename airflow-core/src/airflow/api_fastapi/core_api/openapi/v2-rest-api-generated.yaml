@@ -5648,6 +5648,570 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/newsItems:
+    get:
+      tags:
+      - NewsFeed
+      summary: Get News Items
+      description: 'Get news items.
+
+
+        Unless ``include_inactive`` is set, only published, unexpired items are returned,
+        and entries
+
+        fetched from a remote source only while that source is enabled. Entries of
+        sources that the
+
+        ``[api] news_feed_allow_remote_sources`` and ``news_feed_allow_public_airflow_feeds``
+        settings
+
+        disallow are never returned. ``remote`` limits the result to
+
+        entries fetched from remote sources (``true``) or to items written by administrators
+        (``false``).'
+      operationId: get_news_items
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Include Inactive
+      - name: remote
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Remote
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          description: 'Attributes to order by, multi criteria sort is supported.
+            Prefix with `-` for descending order. Supported attributes: `id, priority,
+            published_at, title, expires_at, created_at`'
+          default:
+          - -published_at
+          title: Order By
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix
+          with `-` for descending order. Supported attributes: `id, priority, published_at,
+          title, expires_at, created_at`'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsItemCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - NewsFeed
+      summary: Post News Item
+      description: Create a news item.
+      operationId: post_news_item
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsItemBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsItemResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/newsItems/{news_item_id}:
+    get:
+      tags:
+      - NewsFeed
+      summary: Get News Item
+      description: Get a news item; an entry of a source the deployment settings disallow
+        is not found.
+      operationId: get_news_item
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: news_item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: News Item Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsItemResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - NewsFeed
+      summary: Patch News Item
+      description: Update a news item.
+      operationId: patch_news_item
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: news_item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: News Item Id
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+          title: Update Mask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsItemPatchBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsItemResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - NewsFeed
+      summary: Delete News Item
+      description: Delete a news item.
+      operationId: delete_news_item
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: news_item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: News Item Id
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/newsSources:
+    get:
+      tags:
+      - NewsFeed
+      summary: Get News Sources
+      description: Get news sources.
+      operationId: get_news_sources
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          description: 'Attributes to order by, multi criteria sort is supported.
+            Prefix with `-` for descending order. Supported attributes: `id, label,
+            url, enabled, created_at`'
+          default:
+          - label
+          title: Order By
+        description: 'Attributes to order by, multi criteria sort is supported. Prefix
+          with `-` for descending order. Supported attributes: `id, label, url, enabled,
+          created_at`'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSourceCollectionResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - NewsFeed
+      summary: Post News Source
+      description: 'Create a news source.
+
+
+        Refused with 403 while the deployment settings disallow remote sources, or
+        disallow the public
+
+        Apache Airflow feeds and the new source is one of them and enabled.'
+      operationId: post_news_source
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsSourceBody'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSourceResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Conflict
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v2/newsSources/{news_source_id}:
+    patch:
+      tags:
+      - NewsFeed
+      summary: Patch News Source
+      description: 'Update a news source.
+
+
+        A new URL makes the source a different feed: the outcome of the last sync
+        and the entries stored
+
+        from the old URL are dropped, and the next ``airflow news-feed sync`` run
+        fetches the new one.
+
+        Lowering ``max_entries`` deletes the stored entries beyond the newest ones
+        at once. A change that
+
+        would leave a source enabled that the deployment settings disallow is refused
+        with 403;
+
+        disabling such a source is always possible.'
+      operationId: patch_news_source
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: news_source_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: News Source Id
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+          title: Update Mask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsSourcePatchBody'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSourceResponse'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Conflict
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - NewsFeed
+      summary: Delete News Source
+      description: Delete a news source.
+      operationId: delete_news_source
+      security:
+      - OAuth2PasswordBearer: []
+      - HTTPBearer: []
+      parameters:
+      - name: news_source_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: News Source Id
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPExceptionResponse'
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/v2/plugins:
     get:
       tags:
@@ -17062,6 +17626,382 @@ components:
       title: NewTaskResponse
       description: Lightweight response for new tasks that don't have TaskInstances
         yet.
+    NewsItemBody:
+      properties:
+        title:
+          type: string
+          maxLength: 250
+          minLength: 1
+          title: Title
+        author:
+          anyOf:
+          - type: string
+            maxLength: 250
+            minLength: 1
+          - type: 'null'
+          title: Author
+          description: Who the item is from, such as a team name; ``null`` shows this
+            deployment.
+        priority:
+          $ref: '#/components/schemas/NewsItemPriority'
+          description: P0 (critical), P1 (important) or P2 (normal).
+          default: P2
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+          description: Markdown body.
+        url:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 1
+          - type: 'null'
+          title: Url
+        published_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Published At
+          description: Defaults to now.
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+          description: '``null`` never expires.'
+      additionalProperties: false
+      type: object
+      required:
+      - title
+      title: NewsItemBody
+      description: News item serializer for post bodies.
+    NewsItemCollectionResponse:
+      properties:
+        news_items:
+          items:
+            $ref: '#/components/schemas/NewsItemResponse'
+          type: array
+          title: News Items
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - news_items
+      - total_entries
+      title: NewsItemCollectionResponse
+      description: News item collection serializer for responses.
+    NewsItemPatchBody:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 250
+            minLength: 1
+          - type: 'null'
+          title: Title
+        author:
+          anyOf:
+          - type: string
+            maxLength: 250
+            minLength: 1
+          - type: 'null'
+          title: Author
+        priority:
+          anyOf:
+          - $ref: '#/components/schemas/NewsItemPriority'
+          - type: 'null'
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        url:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 1
+          - type: 'null'
+          title: Url
+        published_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Published At
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+      additionalProperties: false
+      type: object
+      title: NewsItemPatchBody
+      description: News item serializer for patch bodies.
+    NewsItemPriority:
+      type: string
+      enum:
+      - P0
+      - P1
+      - P2
+      title: NewsItemPriority
+      description: Priority of a news item; P0 is the most urgent.
+    NewsItemResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        title:
+          type: string
+          title: Title
+        author:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author
+        priority:
+          $ref: '#/components/schemas/NewsItemPriority'
+        body:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Body
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        published_at:
+          type: string
+          format: date-time
+          title: Published At
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+        source_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Source Id
+        fetched_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Fetched At
+        created_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created By
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - title
+      - author
+      - priority
+      - body
+      - url
+      - published_at
+      - expires_at
+      - source_id
+      - fetched_at
+      - created_by
+      - created_at
+      - updated_at
+      title: NewsItemResponse
+      description: News item serializer for responses.
+    NewsSourceBody:
+      properties:
+        url:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Url
+        label:
+          type: string
+          maxLength: 250
+          minLength: 1
+          title: Label
+        enabled:
+          type: boolean
+          title: Enabled
+          default: false
+        ttl_days:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Ttl Days
+          description: Entries older than this many days are not shown; ``null`` keeps
+            all.
+          default: 30
+        max_entries:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          title: Max Entries
+          description: Only the newest this many entries of the source are kept and
+            shown.
+          default: 10
+        sync_interval_minutes:
+          type: integer
+          minimum: 5.0
+          title: Sync Interval Minutes
+          description: Minutes ``airflow news-feed sync`` waits after a fetch before
+            fetching the source again.
+          default: 60
+      additionalProperties: false
+      type: object
+      required:
+      - url
+      - label
+      title: NewsSourceBody
+      description: News source serializer for post bodies.
+    NewsSourceCollectionResponse:
+      properties:
+        news_sources:
+          items:
+            $ref: '#/components/schemas/NewsSourceResponse'
+          type: array
+          title: News Sources
+        total_entries:
+          type: integer
+          title: Total Entries
+      type: object
+      required:
+      - news_sources
+      - total_entries
+      title: NewsSourceCollectionResponse
+      description: News source collection serializer for responses.
+    NewsSourcePatchBody:
+      properties:
+        url:
+          anyOf:
+          - type: string
+            maxLength: 500
+            minLength: 1
+          - type: 'null'
+          title: Url
+        label:
+          anyOf:
+          - type: string
+            maxLength: 250
+            minLength: 1
+          - type: 'null'
+          title: Label
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+        ttl_days:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Ttl Days
+        max_entries:
+          anyOf:
+          - type: integer
+            maximum: 100.0
+            minimum: 1.0
+          - type: 'null'
+          title: Max Entries
+        sync_interval_minutes:
+          anyOf:
+          - type: integer
+            minimum: 5.0
+          - type: 'null'
+          title: Sync Interval Minutes
+      additionalProperties: false
+      type: object
+      title: NewsSourcePatchBody
+      description: News source serializer for patch bodies.
+    NewsSourceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        url:
+          type: string
+          title: Url
+        label:
+          type: string
+          title: Label
+        enabled:
+          type: boolean
+          title: Enabled
+        ttl_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Ttl Days
+        max_entries:
+          type: integer
+          title: Max Entries
+        sync_interval_minutes:
+          type: integer
+          title: Sync Interval Minutes
+        last_fetched_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Fetched At
+        last_fetch_error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Fetch Error
+        created_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Created By
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - url
+      - label
+      - enabled
+      - ttl_days
+      - max_entries
+      - sync_interval_minutes
+      - last_fetched_at
+      - last_fetch_error
+      - created_by
+      - created_at
+      - updated_at
+      title: NewsSourceResponse
+      description: News source serializer for responses.
     PatchTaskInstanceBody:
       properties:
         new_state:

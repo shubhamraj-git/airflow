@@ -531,6 +531,17 @@ def clear_db_connection_tests():
 
 
 @_retry_db
+def clear_db_news_feed():
+    with create_session() as session:
+        try:
+            from airflow.models.news_feed import NewsItem, NewsSource
+        except ImportError:
+            return
+        session.execute(delete(NewsItem))
+        session.execute(delete(NewsSource))
+
+
+@_retry_db
 def clear_db_revoked_tokens():
     with create_session() as session:
         from airflow.models.revoked_token import RevokedToken
@@ -1062,3 +1073,4 @@ def clear_all():
         clear_db_dag_bundles()
         clear_db_dag_parsing_requests()
     clear_db_connection_tests()
+    clear_db_news_feed()

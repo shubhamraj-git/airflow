@@ -526,6 +526,42 @@ source code so it stays up to date as endpoints are added or changed.
      - ``/api/v2/monitor/health``
      - ``Public``
      - ``No Airflow permission required``
+   * - ``GET``
+     - ``/api/v2/newsItems``
+     - ``Authenticated``
+     - ``any authenticated user``
+   * - ``POST``
+     - ``/api/v2/newsItems``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
+   * - ``DELETE``
+     - ``/api/v2/newsItems/{news_item_id}``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
+   * - ``GET``
+     - ``/api/v2/newsItems/{news_item_id}``
+     - ``Authenticated``
+     - ``any authenticated user``
+   * - ``PATCH``
+     - ``/api/v2/newsItems/{news_item_id}``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
+   * - ``GET``
+     - ``/api/v2/newsSources``
+     - ``Authenticated``
+     - ``any authenticated user``
+   * - ``POST``
+     - ``/api/v2/newsSources``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
+   * - ``DELETE``
+     - ``/api/v2/newsSources/{news_source_id}``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
+   * - ``PATCH``
+     - ``/api/v2/newsSources/{news_source_id}``
+     - ``View.NEWS_FEED_MANAGE``
+     - ``NEWS_FEED_MANAGE``
    * - ``PUT``
      - ``/api/v2/parseDagFile/{file_token}``
      - ``DAG``

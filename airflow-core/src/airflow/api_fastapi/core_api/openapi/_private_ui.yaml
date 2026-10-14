@@ -3320,6 +3320,18 @@ components:
         multi_team:
           type: boolean
           title: Multi Team
+        news_feed_enabled:
+          type: boolean
+          title: News Feed Enabled
+        news_feed_allow_remote_sources:
+          type: boolean
+          title: News Feed Allow Remote Sources
+        news_feed_allow_public_airflow_feeds:
+          type: boolean
+          title: News Feed Allow Public Airflow Feeds
+        news_feed_max_entries:
+          type: integer
+          title: News Feed Max Entries
         rerun_with_latest_version:
           anyOf:
           - type: boolean
@@ -3339,6 +3351,10 @@ components:
       - show_external_log_redirect
       - theme
       - multi_team
+      - news_feed_enabled
+      - news_feed_allow_remote_sources
+      - news_feed_allow_public_airflow_feeds
+      - news_feed_max_entries
       title: ConfigResponse
       description: configuration serializer.
     ConnectionHookFieldBehavior:
@@ -5114,6 +5130,7 @@ components:
       - Deadlines
       - Docs
       - Jobs
+      - News Feed
       - Plugins
       - Pools
       - Providers

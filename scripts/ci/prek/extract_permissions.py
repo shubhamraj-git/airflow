@@ -150,13 +150,18 @@ def _extract_routers(tree: ast.Module) -> dict[str, str]:
     return routers
 
 
+# ``requires_authenticated()`` grants any signed-in user; it carries no resource or method.
+AUTHENTICATED_FN = "requires_authenticated"
+AUTHENTICATED_RESOURCE = "Authenticated"
+AUTHENTICATED_PERMISSION = "any authenticated user"
+
+
 def _get_requires_access_call_name(call_node: ast.Call) -> str | None:
-    """Extract the function name from a requires_access_*() call node."""
+    """Extract the function name from a requires_access_*() or requires_authenticated() call node."""
     fn = call_node.func
-    if isinstance(fn, ast.Name) and fn.id.startswith("requires_access"):
-        return fn.id
-    if isinstance(fn, ast.Attribute) and fn.attr.startswith("requires_access"):
-        return fn.attr
+    name = fn.id if isinstance(fn, ast.Name) else fn.attr if isinstance(fn, ast.Attribute) else None
+    if name is not None and (name.startswith("requires_access") or name == AUTHENTICATED_FN):
+        return name
     return None
 
 
@@ -241,6 +246,7 @@ _FN_TO_RESOURCE_INFO: dict[str, tuple[str, str | None]] = {
     "requires_access_asset": ("Asset", None),
     "requires_access_asset_alias": ("AssetAlias", None),
     "requires_access_view": ("View", None),
+    AUTHENTICATED_FN: (AUTHENTICATED_RESOURCE, None),
 }
 
 
@@ -348,7 +354,10 @@ def extract_from_file(path: pathlib.Path) -> list[PermissionEntry]:
                     method = _extract_method_arg(inner)
                     entity = _extract_entity_arg(inner)
                     resource = _build_resource_label(fn_name, entity)
-                    permission = entity if fn_name == "requires_access_view" else method
+                    if fn_name == AUTHENTICATED_FN:
+                        permission: str | None = AUTHENTICATED_PERMISSION
+                    else:
+                        permission = entity if fn_name == "requires_access_view" else method
                     if not isinstance(permission, str):
                         raise ValueError(
                             f"Could not resolve required permission for {fn_name} in {path.name}"

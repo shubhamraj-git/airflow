@@ -39,6 +39,7 @@ import pathlib
 import sys
 
 from extract_permissions import (
+    AUTHENTICATED_RESOURCE,
     PUBLIC_ROUTES_DIR,
     PermissionEntry,
     extract_all_permissions,
@@ -70,6 +71,9 @@ _METHOD_TO_ACTION = {
     "PATCH": "can_edit",
     "DELETE": "can_delete",
 }
+
+# Shown in the permissions column for routes that only need a signed-in user.
+AUTHENTICATED_ONLY = "Authenticated user"
 
 # Built-in roles, ordered from least to most privileged. ``ROLE_CONFIGS`` builds
 # each one as a superset of the previous, so the minimum role that grants a set
@@ -119,6 +123,18 @@ def _enum_member(node: ast.expr) -> str | None:
     return None
 
 
+def _map_key_member(node: ast.expr) -> str | None:
+    """A mapping key as its member name: ``AccessView.X`` or the compat shim name ``X_ACCESS_VIEW``.
+
+    Members added to core after a provider's minimum Airflow version are mapped through guarded
+    ``_MAP_...[KEY] = RESOURCE`` assignments rather than the dict literal, keyed by the shim
+    constant that resolves to the member (or ``None`` on an older core).
+    """
+    if isinstance(node, ast.Name):
+        return node.id.removesuffix("_ACCESS_VIEW")
+    return _enum_member(node)
+
+
 def _const_names(node: ast.expr) -> tuple[str, ...]:
     """A ``RESOURCE_X`` name, or a tuple of them, as their identifier strings."""
     if isinstance(node, ast.Name):
@@ -152,6 +168,23 @@ def _entity_maps() -> tuple[dict[str, tuple[str, ...]], dict[str, str]]:
             names = _const_names(value)
             if member and names:
                 view_map[member] = names[0]
+
+    # Entries added under a version guard, e.g.
+    # ``if X_ACCESS_VIEW is not None: _MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE[X_ACCESS_VIEW] = RESOURCE_X``.
+    for stmt in ast.walk(tree):
+        if not isinstance(stmt, ast.Assign) or len(stmt.targets) != 1:
+            continue
+        target = stmt.targets[0]
+        if not isinstance(target, ast.Subscript) or not isinstance(target.value, ast.Name):
+            continue
+        member = _map_key_member(target.slice)
+        names = _const_names(stmt.value)
+        if not member or not names:
+            continue
+        if target.value.id == "_MAP_DAG_ACCESS_ENTITY_TO_FAB_RESOURCE_TYPE":
+            dag_map[member] = names
+        elif target.value.id == "_MAP_ACCESS_VIEW_TO_FAB_RESOURCE_TYPE":
+            view_map[member] = names[0]
 
     return dag_map, view_map
 
@@ -215,6 +248,9 @@ def fab_permissions_for(entry: PermissionEntry) -> list[str]:
     if entry.resource == "Public":
         return []
 
+    if entry.resource == AUTHENTICATED_RESOURCE:
+        return [AUTHENTICATED_ONLY]
+
     if entry.resource == "View" or entry.resource.startswith("View."):
         # ``_build_resource_label`` renders these as ``View.PLUGINS``; the view name is
         # also carried in ``required_permission``.
@@ -269,6 +305,10 @@ def minimum_role(perms: list[str]) -> str:
     """First built-in role whose permissions cover every required permission."""
     if not perms:
         return "Public"
+    if perms == [AUTHENTICATED_ONLY]:
+        # Any signed-in user qualifies; ``Public`` is the anonymous role, so the least
+        # privileged built-in role a user can hold is the answer.
+        return "Viewer"
     roles = _role_permissions()
     required = set()
     for perm in perms:

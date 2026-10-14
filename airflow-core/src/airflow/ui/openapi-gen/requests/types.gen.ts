@@ -1866,6 +1866,138 @@ export type NewTaskResponse = {
 };
 
 /**
+ * News item serializer for post bodies.
+ */
+export type NewsItemBody = {
+    title: string;
+    /**
+     * Who the item is from, such as a team name; ``null`` shows this deployment.
+     */
+    author?: string | null;
+    /**
+     * P0 (critical), P1 (important) or P2 (normal).
+     */
+    priority?: NewsItemPriority;
+    /**
+     * Markdown body.
+     */
+    body?: string | null;
+    url?: string | null;
+    /**
+     * Defaults to now.
+     */
+    published_at?: string | null;
+    /**
+     * ``null`` never expires.
+     */
+    expires_at?: string | null;
+};
+
+/**
+ * News item collection serializer for responses.
+ */
+export type NewsItemCollectionResponse = {
+    news_items: Array<NewsItemResponse>;
+    total_entries: number;
+};
+
+/**
+ * News item serializer for patch bodies.
+ */
+export type NewsItemPatchBody = {
+    title?: string | null;
+    author?: string | null;
+    priority?: NewsItemPriority | null;
+    body?: string | null;
+    url?: string | null;
+    published_at?: string | null;
+    expires_at?: string | null;
+};
+
+/**
+ * Priority of a news item; P0 is the most urgent.
+ */
+export type NewsItemPriority = 'P0' | 'P1' | 'P2';
+
+/**
+ * News item serializer for responses.
+ */
+export type NewsItemResponse = {
+    id: string;
+    title: string;
+    author: string | null;
+    priority: NewsItemPriority;
+    body: string | null;
+    url: string | null;
+    published_at: string;
+    expires_at: string | null;
+    source_id: string | null;
+    fetched_at: string | null;
+    created_by: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+/**
+ * News source serializer for post bodies.
+ */
+export type NewsSourceBody = {
+    url: string;
+    label: string;
+    enabled?: boolean;
+    /**
+     * Entries older than this many days are not shown; ``null`` keeps all.
+     */
+    ttl_days?: number | null;
+    /**
+     * Only the newest this many entries of the source are kept and shown.
+     */
+    max_entries?: number;
+    /**
+     * Minutes ``airflow news-feed sync`` waits after a fetch before fetching the source again.
+     */
+    sync_interval_minutes?: number;
+};
+
+/**
+ * News source collection serializer for responses.
+ */
+export type NewsSourceCollectionResponse = {
+    news_sources: Array<NewsSourceResponse>;
+    total_entries: number;
+};
+
+/**
+ * News source serializer for patch bodies.
+ */
+export type NewsSourcePatchBody = {
+    url?: string | null;
+    label?: string | null;
+    enabled?: boolean | null;
+    ttl_days?: number | null;
+    max_entries?: number | null;
+    sync_interval_minutes?: number | null;
+};
+
+/**
+ * News source serializer for responses.
+ */
+export type NewsSourceResponse = {
+    id: string;
+    url: string;
+    label: string;
+    enabled: boolean;
+    ttl_days: number | null;
+    max_entries: number;
+    sync_interval_minutes: number;
+    last_fetched_at: string | null;
+    last_fetch_error: string | null;
+    created_by: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+/**
  * Request body for patching task instance state.
  */
 export type PatchTaskInstanceBody = {
@@ -2698,6 +2830,10 @@ export type ConfigResponse = {
     external_log_name?: string | null;
     theme: Theme | null;
     multi_team: boolean;
+    news_feed_enabled: boolean;
+    news_feed_allow_remote_sources: boolean;
+    news_feed_allow_public_airflow_feeds: boolean;
+    news_feed_max_entries: number;
     rerun_with_latest_version?: boolean | null;
 };
 
@@ -3199,7 +3335,7 @@ export type LoopSummaryResponse = {
 /**
  * Define all menu items defined in the menu.
  */
-export type MenuItem = 'Required Actions' | 'Assets' | 'Audit Log' | 'Config' | 'Connections' | 'Dags' | 'Dag Bundles' | 'Deadlines' | 'Docs' | 'Jobs' | 'Plugins' | 'Pools' | 'Providers' | 'Variables' | 'XComs';
+export type MenuItem = 'Required Actions' | 'Assets' | 'Audit Log' | 'Config' | 'Connections' | 'Dags' | 'Dag Bundles' | 'Deadlines' | 'Docs' | 'Jobs' | 'News Feed' | 'Plugins' | 'Pools' | 'Providers' | 'Variables' | 'XComs';
 
 /**
  * Menu Item Collection serializer for responses.
@@ -4997,6 +5133,76 @@ export type GetJobsData = {
 };
 
 export type GetJobsResponse = JobCollectionResponse;
+
+export type GetNewsItemsData = {
+    includeInactive?: boolean;
+    limit?: number;
+    offset?: number;
+    /**
+     * Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, priority, published_at, title, expires_at, created_at`
+     */
+    orderBy?: Array<(string)>;
+    remote?: boolean | null;
+};
+
+export type GetNewsItemsResponse = NewsItemCollectionResponse;
+
+export type PostNewsItemData = {
+    requestBody: NewsItemBody;
+};
+
+export type PostNewsItemResponse = NewsItemResponse;
+
+export type GetNewsItemData = {
+    newsItemId: string;
+};
+
+export type GetNewsItemResponse = NewsItemResponse;
+
+export type PatchNewsItemData = {
+    newsItemId: string;
+    requestBody: NewsItemPatchBody;
+    updateMask?: Array<(string)> | null;
+};
+
+export type PatchNewsItemResponse = NewsItemResponse;
+
+export type DeleteNewsItemData = {
+    newsItemId: string;
+};
+
+export type DeleteNewsItemResponse = void;
+
+export type GetNewsSourcesData = {
+    limit?: number;
+    offset?: number;
+    /**
+     * Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, label, url, enabled, created_at`
+     */
+    orderBy?: Array<(string)>;
+};
+
+export type GetNewsSourcesResponse = NewsSourceCollectionResponse;
+
+export type PostNewsSourceData = {
+    requestBody: NewsSourceBody;
+};
+
+export type PostNewsSourceResponse = NewsSourceResponse;
+
+export type PatchNewsSourceData = {
+    newsSourceId: string;
+    requestBody: NewsSourcePatchBody;
+    updateMask?: Array<(string)> | null;
+};
+
+export type PatchNewsSourceResponse = NewsSourceResponse;
+
+export type DeleteNewsSourceData = {
+    newsSourceId: string;
+};
+
+export type DeleteNewsSourceResponse = void;
 
 export type GetPluginsData = {
     limit?: number;
@@ -8592,6 +8798,243 @@ export type $OpenApiTs = {
                  * Forbidden
                  */
                 403: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v2/newsItems': {
+        get: {
+            req: GetNewsItemsData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: NewsItemCollectionResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        post: {
+            req: PostNewsItemData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                201: NewsItemResponse;
+                /**
+                 * Bad Request
+                 */
+                400: HTTPExceptionResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v2/newsItems/{news_item_id}': {
+        get: {
+            req: GetNewsItemData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: NewsItemResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Not Found
+                 */
+                404: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        patch: {
+            req: PatchNewsItemData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: NewsItemResponse;
+                /**
+                 * Bad Request
+                 */
+                400: HTTPExceptionResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Not Found
+                 */
+                404: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: DeleteNewsItemData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                204: void;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Not Found
+                 */
+                404: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v2/newsSources': {
+        get: {
+            req: GetNewsSourcesData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: NewsSourceCollectionResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        post: {
+            req: PostNewsSourceData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                201: NewsSourceResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Conflict
+                 */
+                409: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v2/newsSources/{news_source_id}': {
+        patch: {
+            req: PatchNewsSourceData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: NewsSourceResponse;
+                /**
+                 * Bad Request
+                 */
+                400: HTTPExceptionResponse;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Not Found
+                 */
+                404: HTTPExceptionResponse;
+                /**
+                 * Conflict
+                 */
+                409: HTTPExceptionResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: DeleteNewsSourceData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                204: void;
+                /**
+                 * Unauthorized
+                 */
+                401: HTTPExceptionResponse;
+                /**
+                 * Forbidden
+                 */
+                403: HTTPExceptionResponse;
+                /**
+                 * Not Found
+                 */
+                404: HTTPExceptionResponse;
                 /**
                  * Validation Error
                  */

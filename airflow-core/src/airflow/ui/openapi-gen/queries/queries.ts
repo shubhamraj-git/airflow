@@ -1,8 +1,8 @@
 // generated with @7nohe/openapi-react-query-codegen@1.6.2 
 
 import { UseMutationOptions, UseQueryOptions, useMutation, useQuery } from "@tanstack/react-query";
-import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagParsingService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
-import { AssetStateStoreBody, BackfillPostBody, BulkBody_BulkDAGBody_, BulkBody_BulkDAGRunBody_, BulkBody_BulkTaskInstanceBody_, BulkBody_ConnectionBody_, BulkBody_PoolBody_, BulkBody_VariableBody_, BulkDAGRunClearBody, ClearPartitionsBody, ClearTaskInstancesBody, ConnectionBody, ConnectionTestRequestBody, CreateAssetEventsBody, DAGPatchBody, DAGRunClearBody, DAGRunPatchBody, DAGRunsBatchBody, DagRunState, DagSchedulingState, GenerateTokenBody, MaterializeAssetBody, PatchTaskInstanceBody, PoolBody, PoolPatchBody, ReprocessBehavior, TaskInstancesBatchBody, TaskStateStoreBody, TaskStateStorePatchBody, TriggerDAGRunPostBody, UpdateHITLDetailPayload, VariableBody, XComCreateBody, XComUpdateBody } from "../requests/types.gen";
+import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagParsingService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, NewsFeedService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
+import { AssetStateStoreBody, BackfillPostBody, BulkBody_BulkDAGBody_, BulkBody_BulkDAGRunBody_, BulkBody_BulkTaskInstanceBody_, BulkBody_ConnectionBody_, BulkBody_PoolBody_, BulkBody_VariableBody_, BulkDAGRunClearBody, ClearPartitionsBody, ClearTaskInstancesBody, ConnectionBody, ConnectionTestRequestBody, CreateAssetEventsBody, DAGPatchBody, DAGRunClearBody, DAGRunPatchBody, DAGRunsBatchBody, DagRunState, DagSchedulingState, GenerateTokenBody, MaterializeAssetBody, NewsItemBody, NewsItemPatchBody, NewsSourceBody, NewsSourcePatchBody, PatchTaskInstanceBody, PoolBody, PoolPatchBody, ReprocessBehavior, TaskInstancesBatchBody, TaskStateStoreBody, TaskStateStorePatchBody, TriggerDAGRunPostBody, UpdateHITLDetailPayload, VariableBody, XComCreateBody, XComUpdateBody } from "../requests/types.gen";
 import * as Common from "./common";
 /**
 * Get Assets
@@ -1776,6 +1776,57 @@ export const useJobServiceGetJobs = <TData = Common.JobServiceGetJobsDefaultResp
   teams?: string[];
 } = {}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useQuery<TData, TError>({ queryKey: Common.UseJobServiceGetJobsKeyFn({ dagId, endDateGt, endDateGte, endDateLt, endDateLte, executorClass, hostname, isAlive, jobState, jobType, limit, offset, orderBy, startDateGt, startDateGte, startDateLt, startDateLte, teams }, queryKey), queryFn: () => JobService.getJobs({ dagId, endDateGt, endDateGte, endDateLt, endDateLte, executorClass, hostname, isAlive, jobState, jobType, limit, offset, orderBy, startDateGt, startDateGte, startDateLt, startDateLte, teams }) as TData, ...options });
 /**
+* Get News Items
+* Get news items.
+*
+* Unless ``include_inactive`` is set, only published, unexpired items are returned, and entries
+* fetched from a remote source only while that source is enabled. Entries of sources that the
+* ``[api] news_feed_allow_remote_sources`` and ``news_feed_allow_public_airflow_feeds`` settings
+* disallow are never returned. ``remote`` limits the result to
+* entries fetched from remote sources (``true``) or to items written by administrators (``false``).
+* @param data The data for the request.
+* @param data.includeInactive
+* @param data.remote
+* @param data.limit
+* @param data.offset
+* @param data.orderBy Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, priority, published_at, title, expires_at, created_at`
+* @returns NewsItemCollectionResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServiceGetNewsItems = <TData = Common.NewsFeedServiceGetNewsItemsDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>({ includeInactive, limit, offset, orderBy, remote }: {
+  includeInactive?: boolean;
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+  remote?: boolean;
+} = {}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useQuery<TData, TError>({ queryKey: Common.UseNewsFeedServiceGetNewsItemsKeyFn({ includeInactive, limit, offset, orderBy, remote }, queryKey), queryFn: () => NewsFeedService.getNewsItems({ includeInactive, limit, offset, orderBy, remote }) as TData, ...options });
+/**
+* Get News Item
+* Get a news item; an entry of a source the deployment settings disallow is not found.
+* @param data The data for the request.
+* @param data.newsItemId
+* @returns NewsItemResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServiceGetNewsItem = <TData = Common.NewsFeedServiceGetNewsItemDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>({ newsItemId }: {
+  newsItemId: string;
+}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useQuery<TData, TError>({ queryKey: Common.UseNewsFeedServiceGetNewsItemKeyFn({ newsItemId }, queryKey), queryFn: () => NewsFeedService.getNewsItem({ newsItemId }) as TData, ...options });
+/**
+* Get News Sources
+* Get news sources.
+* @param data The data for the request.
+* @param data.limit
+* @param data.offset
+* @param data.orderBy Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, label, url, enabled, created_at`
+* @returns NewsSourceCollectionResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServiceGetNewsSources = <TData = Common.NewsFeedServiceGetNewsSourcesDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>({ limit, offset, orderBy }: {
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+} = {}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useQuery<TData, TError>({ queryKey: Common.UseNewsFeedServiceGetNewsSourcesKeyFn({ limit, offset, orderBy }, queryKey), queryFn: () => NewsFeedService.getNewsSources({ limit, offset, orderBy }) as TData, ...options });
+/**
 * Get Plugins
 * @param data The data for the request.
 * @param data.limit
@@ -2775,6 +2826,35 @@ export const useTaskInstanceServicePostClearTaskInstances = <TData = Common.Task
   requestBody: ClearTaskInstancesBody;
 }, TContext>({ mutationFn: ({ dagId, requestBody }) => TaskInstanceService.postClearTaskInstances({ dagId, requestBody }) as unknown as Promise<TData>, ...options });
 /**
+* Post News Item
+* Create a news item.
+* @param data The data for the request.
+* @param data.requestBody
+* @returns NewsItemResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServicePostNewsItem = <TData = Common.NewsFeedServicePostNewsItemMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  requestBody: NewsItemBody;
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  requestBody: NewsItemBody;
+}, TContext>({ mutationFn: ({ requestBody }) => NewsFeedService.postNewsItem({ requestBody }) as unknown as Promise<TData>, ...options });
+/**
+* Post News Source
+* Create a news source.
+*
+* Refused with 403 while the deployment settings disallow remote sources, or disallow the public
+* Apache Airflow feeds and the new source is one of them and enabled.
+* @param data The data for the request.
+* @param data.requestBody
+* @returns NewsSourceResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServicePostNewsSource = <TData = Common.NewsFeedServicePostNewsSourceMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  requestBody: NewsSourceBody;
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  requestBody: NewsSourceBody;
+}, TContext>({ mutationFn: ({ requestBody }) => NewsFeedService.postNewsSource({ requestBody }) as unknown as Promise<TData>, ...options });
+/**
 * Post Pool
 * Create a Pool.
 * @param data The data for the request.
@@ -3332,6 +3412,50 @@ export const useTaskInstanceServiceUpdateHitlDetail = <TData = Common.TaskInstan
   taskId: string;
 }, TContext>({ mutationFn: ({ dagId, dagRunId, mapIndex, regionId, regionIndex, requestBody, taskId }) => TaskInstanceService.updateHitlDetail({ dagId, dagRunId, mapIndex, regionId, regionIndex, requestBody, taskId }) as unknown as Promise<TData>, ...options });
 /**
+* Patch News Item
+* Update a news item.
+* @param data The data for the request.
+* @param data.newsItemId
+* @param data.requestBody
+* @param data.updateMask
+* @returns NewsItemResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServicePatchNewsItem = <TData = Common.NewsFeedServicePatchNewsItemMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  newsItemId: string;
+  requestBody: NewsItemPatchBody;
+  updateMask?: string[];
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  newsItemId: string;
+  requestBody: NewsItemPatchBody;
+  updateMask?: string[];
+}, TContext>({ mutationFn: ({ newsItemId, requestBody, updateMask }) => NewsFeedService.patchNewsItem({ newsItemId, requestBody, updateMask }) as unknown as Promise<TData>, ...options });
+/**
+* Patch News Source
+* Update a news source.
+*
+* A new URL makes the source a different feed: the outcome of the last sync and the entries stored
+* from the old URL are dropped, and the next ``airflow news-feed sync`` run fetches the new one.
+* Lowering ``max_entries`` deletes the stored entries beyond the newest ones at once. A change that
+* would leave a source enabled that the deployment settings disallow is refused with 403;
+* disabling such a source is always possible.
+* @param data The data for the request.
+* @param data.newsSourceId
+* @param data.requestBody
+* @param data.updateMask
+* @returns NewsSourceResponse Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServicePatchNewsSource = <TData = Common.NewsFeedServicePatchNewsSourceMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  newsSourceId: string;
+  requestBody: NewsSourcePatchBody;
+  updateMask?: string[];
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  newsSourceId: string;
+  requestBody: NewsSourcePatchBody;
+  updateMask?: string[];
+}, TContext>({ mutationFn: ({ newsSourceId, requestBody, updateMask }) => NewsFeedService.patchNewsSource({ newsSourceId, requestBody, updateMask }) as unknown as Promise<TData>, ...options });
+/**
 * Patch Pool
 * Update a Pool.
 * @param data The data for the request.
@@ -3574,6 +3698,32 @@ export const useTaskInstanceServiceDeleteTaskInstance = <TData = Common.TaskInst
   regionIndex?: number;
   taskId: string;
 }, TContext>({ mutationFn: ({ dagId, dagRunId, mapIndex, regionId, regionIndex, taskId }) => TaskInstanceService.deleteTaskInstance({ dagId, dagRunId, mapIndex, regionId, regionIndex, taskId }) as unknown as Promise<TData>, ...options });
+/**
+* Delete News Item
+* Delete a news item.
+* @param data The data for the request.
+* @param data.newsItemId
+* @returns void Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServiceDeleteNewsItem = <TData = Common.NewsFeedServiceDeleteNewsItemMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  newsItemId: string;
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  newsItemId: string;
+}, TContext>({ mutationFn: ({ newsItemId }) => NewsFeedService.deleteNewsItem({ newsItemId }) as unknown as Promise<TData>, ...options });
+/**
+* Delete News Source
+* Delete a news source.
+* @param data The data for the request.
+* @param data.newsSourceId
+* @returns void Successful Response
+* @throws ApiError
+*/
+export const useNewsFeedServiceDeleteNewsSource = <TData = Common.NewsFeedServiceDeleteNewsSourceMutationResult, TError = unknown, TContext = unknown>(options?: Omit<UseMutationOptions<TData, TError, {
+  newsSourceId: string;
+}, TContext>, "mutationFn">) => useMutation<TData, TError, {
+  newsSourceId: string;
+}, TContext>({ mutationFn: ({ newsSourceId }) => NewsFeedService.deleteNewsSource({ newsSourceId }) as unknown as Promise<TData>, ...options });
 /**
 * Delete Pool
 * Delete a pool entry.

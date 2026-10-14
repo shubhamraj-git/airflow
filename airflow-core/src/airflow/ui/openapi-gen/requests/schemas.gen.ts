@@ -6853,6 +6853,576 @@ export const $NewTaskResponse = {
     description: "Lightweight response for new tasks that don't have TaskInstances yet."
 } as const;
 
+export const $NewsItemBody = {
+    properties: {
+        title: {
+            type: 'string',
+            maxLength: 250,
+            minLength: 1,
+            title: 'Title'
+        },
+        author: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 250,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Author',
+            description: 'Who the item is from, such as a team name; ``null`` shows this deployment.'
+        },
+        priority: {
+            '$ref': '#/components/schemas/NewsItemPriority',
+            description: 'P0 (critical), P1 (important) or P2 (normal).',
+            default: 'P2'
+        },
+        body: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Body',
+            description: 'Markdown body.'
+        },
+        url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Url'
+        },
+        published_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Published At',
+            description: 'Defaults to now.'
+        },
+        expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Expires At',
+            description: `\`\`null\`\` never expires.`
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['title'],
+    title: 'NewsItemBody',
+    description: 'News item serializer for post bodies.'
+} as const;
+
+export const $NewsItemCollectionResponse = {
+    properties: {
+        news_items: {
+            items: {
+                '$ref': '#/components/schemas/NewsItemResponse'
+            },
+            type: 'array',
+            title: 'News Items'
+        },
+        total_entries: {
+            type: 'integer',
+            title: 'Total Entries'
+        }
+    },
+    type: 'object',
+    required: ['news_items', 'total_entries'],
+    title: 'NewsItemCollectionResponse',
+    description: 'News item collection serializer for responses.'
+} as const;
+
+export const $NewsItemPatchBody = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 250,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        author: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 250,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Author'
+        },
+        priority: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/NewsItemPriority'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        body: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Body'
+        },
+        url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2000,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Url'
+        },
+        published_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Published At'
+        },
+        expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Expires At'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    title: 'NewsItemPatchBody',
+    description: 'News item serializer for patch bodies.'
+} as const;
+
+export const $NewsItemPriority = {
+    type: 'string',
+    enum: ['P0', 'P1', 'P2'],
+    title: 'NewsItemPriority',
+    description: 'Priority of a news item; P0 is the most urgent.'
+} as const;
+
+export const $NewsItemResponse = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        title: {
+            type: 'string',
+            title: 'Title'
+        },
+        author: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Author'
+        },
+        priority: {
+            '$ref': '#/components/schemas/NewsItemPriority'
+        },
+        body: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Body'
+        },
+        url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Url'
+        },
+        published_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Published At'
+        },
+        expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Expires At'
+        },
+        source_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Source Id'
+        },
+        fetched_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Fetched At'
+        },
+        created_by: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Created By'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['id', 'title', 'author', 'priority', 'body', 'url', 'published_at', 'expires_at', 'source_id', 'fetched_at', 'created_by', 'created_at', 'updated_at'],
+    title: 'NewsItemResponse',
+    description: 'News item serializer for responses.'
+} as const;
+
+export const $NewsSourceBody = {
+    properties: {
+        url: {
+            type: 'string',
+            maxLength: 500,
+            minLength: 1,
+            title: 'Url'
+        },
+        label: {
+            type: 'string',
+            maxLength: 250,
+            minLength: 1,
+            title: 'Label'
+        },
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled',
+            default: false
+        },
+        ttl_days: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    minimum: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ttl Days',
+            description: 'Entries older than this many days are not shown; ``null`` keeps all.',
+            default: 30
+        },
+        max_entries: {
+            type: 'integer',
+            maximum: 100,
+            minimum: 1,
+            title: 'Max Entries',
+            description: 'Only the newest this many entries of the source are kept and shown.',
+            default: 10
+        },
+        sync_interval_minutes: {
+            type: 'integer',
+            minimum: 5,
+            title: 'Sync Interval Minutes',
+            description: 'Minutes ``airflow news-feed sync`` waits after a fetch before fetching the source again.',
+            default: 60
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['url', 'label'],
+    title: 'NewsSourceBody',
+    description: 'News source serializer for post bodies.'
+} as const;
+
+export const $NewsSourceCollectionResponse = {
+    properties: {
+        news_sources: {
+            items: {
+                '$ref': '#/components/schemas/NewsSourceResponse'
+            },
+            type: 'array',
+            title: 'News Sources'
+        },
+        total_entries: {
+            type: 'integer',
+            title: 'Total Entries'
+        }
+    },
+    type: 'object',
+    required: ['news_sources', 'total_entries'],
+    title: 'NewsSourceCollectionResponse',
+    description: 'News source collection serializer for responses.'
+} as const;
+
+export const $NewsSourcePatchBody = {
+    properties: {
+        url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 500,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Url'
+        },
+        label: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 250,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Label'
+        },
+        enabled: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Enabled'
+        },
+        ttl_days: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    minimum: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ttl Days'
+        },
+        max_entries: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    maximum: 100,
+                    minimum: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Entries'
+        },
+        sync_interval_minutes: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    minimum: 5
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Sync Interval Minutes'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    title: 'NewsSourcePatchBody',
+    description: 'News source serializer for patch bodies.'
+} as const;
+
+export const $NewsSourceResponse = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        url: {
+            type: 'string',
+            title: 'Url'
+        },
+        label: {
+            type: 'string',
+            title: 'Label'
+        },
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled'
+        },
+        ttl_days: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ttl Days'
+        },
+        max_entries: {
+            type: 'integer',
+            title: 'Max Entries'
+        },
+        sync_interval_minutes: {
+            type: 'integer',
+            title: 'Sync Interval Minutes'
+        },
+        last_fetched_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Fetched At'
+        },
+        last_fetch_error: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Fetch Error'
+        },
+        created_by: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Created By'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['id', 'url', 'label', 'enabled', 'ttl_days', 'max_entries', 'sync_interval_minutes', 'last_fetched_at', 'last_fetch_error', 'created_by', 'created_at', 'updated_at'],
+    title: 'NewsSourceResponse',
+    description: 'News source serializer for responses.'
+} as const;
+
 export const $PatchTaskInstanceBody = {
     properties: {
         new_state: {
@@ -10378,6 +10948,22 @@ export const $ConfigResponse = {
             type: 'boolean',
             title: 'Multi Team'
         },
+        news_feed_enabled: {
+            type: 'boolean',
+            title: 'News Feed Enabled'
+        },
+        news_feed_allow_remote_sources: {
+            type: 'boolean',
+            title: 'News Feed Allow Remote Sources'
+        },
+        news_feed_allow_public_airflow_feeds: {
+            type: 'boolean',
+            title: 'News Feed Allow Public Airflow Feeds'
+        },
+        news_feed_max_entries: {
+            type: 'integer',
+            title: 'News Feed Max Entries'
+        },
         rerun_with_latest_version: {
             anyOf: [
                 {
@@ -10391,7 +10977,7 @@ export const $ConfigResponse = {
         }
     },
     type: 'object',
-    required: ['fallback_page_limit', 'auto_refresh_interval', 'hide_paused_dags_by_default', 'instance_name', 'enable_swagger_ui', 'require_confirmation_dag_change', 'default_wrap', 'test_connection', 'dashboard_alert', 'show_external_log_redirect', 'theme', 'multi_team'],
+    required: ['fallback_page_limit', 'auto_refresh_interval', 'hide_paused_dags_by_default', 'instance_name', 'enable_swagger_ui', 'require_confirmation_dag_change', 'default_wrap', 'test_connection', 'dashboard_alert', 'show_external_log_redirect', 'theme', 'multi_team', 'news_feed_enabled', 'news_feed_allow_remote_sources', 'news_feed_allow_public_airflow_feeds', 'news_feed_max_entries'],
     title: 'ConfigResponse',
     description: 'configuration serializer.'
 } as const;
@@ -12401,7 +12987,7 @@ export const $LoopSummaryResponse = {
 
 export const $MenuItem = {
     type: 'string',
-    enum: ['Required Actions', 'Assets', 'Audit Log', 'Config', 'Connections', 'Dags', 'Dag Bundles', 'Deadlines', 'Docs', 'Jobs', 'Plugins', 'Pools', 'Providers', 'Variables', 'XComs'],
+    enum: ['Required Actions', 'Assets', 'Audit Log', 'Config', 'Connections', 'Dags', 'Dag Bundles', 'Deadlines', 'Docs', 'Jobs', 'News Feed', 'Plugins', 'Pools', 'Providers', 'Variables', 'XComs'],
     title: 'MenuItem',
     description: 'Define all menu items defined in the menu.'
 } as const;

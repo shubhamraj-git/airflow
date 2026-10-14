@@ -1,7 +1,7 @@
 // generated with @7nohe/openapi-react-query-codegen@1.6.2 
 
 import { type QueryClient } from "@tanstack/react-query";
-import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
+import { AssetService, AssetStateStoreService, AuthLinksService, BackfillService, CalendarService, ConfigService, ConnectionService, DagBundleService, DagRunService, DagService, DagSourceService, DagStatsService, DagVersionService, DagWarningService, DashboardService, DeadlinesService, DependenciesService, EventLogService, ExperimentalService, ExtraLinksService, GanttService, GridService, ImportErrorService, JobService, LoginService, MonitorService, NewsFeedService, PartitionedDagRunService, PluginService, PoolService, ProviderService, StructureService, TaskInstanceService, TaskService, TaskStateStoreService, TeamsService, VariableService, VersionService, XcomService } from "../requests/services.gen";
 import { DagRunState, DagSchedulingState, ReprocessBehavior } from "../requests/types.gen";
 import * as Common from "./common";
 /**
@@ -1775,6 +1775,57 @@ export const ensureUseJobServiceGetJobsData = (queryClient: QueryClient, { dagId
   startDateLte?: string;
   teams?: string[];
 } = {}) => queryClient.ensureQueryData({ queryKey: Common.UseJobServiceGetJobsKeyFn({ dagId, endDateGt, endDateGte, endDateLt, endDateLte, executorClass, hostname, isAlive, jobState, jobType, limit, offset, orderBy, startDateGt, startDateGte, startDateLt, startDateLte, teams }), queryFn: () => JobService.getJobs({ dagId, endDateGt, endDateGte, endDateLt, endDateLte, executorClass, hostname, isAlive, jobState, jobType, limit, offset, orderBy, startDateGt, startDateGte, startDateLt, startDateLte, teams }) });
+/**
+* Get News Items
+* Get news items.
+*
+* Unless ``include_inactive`` is set, only published, unexpired items are returned, and entries
+* fetched from a remote source only while that source is enabled. Entries of sources that the
+* ``[api] news_feed_allow_remote_sources`` and ``news_feed_allow_public_airflow_feeds`` settings
+* disallow are never returned. ``remote`` limits the result to
+* entries fetched from remote sources (``true``) or to items written by administrators (``false``).
+* @param data The data for the request.
+* @param data.includeInactive
+* @param data.remote
+* @param data.limit
+* @param data.offset
+* @param data.orderBy Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, priority, published_at, title, expires_at, created_at`
+* @returns NewsItemCollectionResponse Successful Response
+* @throws ApiError
+*/
+export const ensureUseNewsFeedServiceGetNewsItemsData = (queryClient: QueryClient, { includeInactive, limit, offset, orderBy, remote }: {
+  includeInactive?: boolean;
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+  remote?: boolean;
+} = {}) => queryClient.ensureQueryData({ queryKey: Common.UseNewsFeedServiceGetNewsItemsKeyFn({ includeInactive, limit, offset, orderBy, remote }), queryFn: () => NewsFeedService.getNewsItems({ includeInactive, limit, offset, orderBy, remote }) });
+/**
+* Get News Item
+* Get a news item; an entry of a source the deployment settings disallow is not found.
+* @param data The data for the request.
+* @param data.newsItemId
+* @returns NewsItemResponse Successful Response
+* @throws ApiError
+*/
+export const ensureUseNewsFeedServiceGetNewsItemData = (queryClient: QueryClient, { newsItemId }: {
+  newsItemId: string;
+}) => queryClient.ensureQueryData({ queryKey: Common.UseNewsFeedServiceGetNewsItemKeyFn({ newsItemId }), queryFn: () => NewsFeedService.getNewsItem({ newsItemId }) });
+/**
+* Get News Sources
+* Get news sources.
+* @param data The data for the request.
+* @param data.limit
+* @param data.offset
+* @param data.orderBy Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, label, url, enabled, created_at`
+* @returns NewsSourceCollectionResponse Successful Response
+* @throws ApiError
+*/
+export const ensureUseNewsFeedServiceGetNewsSourcesData = (queryClient: QueryClient, { limit, offset, orderBy }: {
+  limit?: number;
+  offset?: number;
+  orderBy?: string[];
+} = {}) => queryClient.ensureQueryData({ queryKey: Common.UseNewsFeedServiceGetNewsSourcesKeyFn({ limit, offset, orderBy }), queryFn: () => NewsFeedService.getNewsSources({ limit, offset, orderBy }) });
 /**
 * Get Plugins
 * @param data The data for the request.

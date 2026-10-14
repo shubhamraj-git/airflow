@@ -486,7 +486,7 @@ Stable API Permissions
      - User
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/hitlDetails``
      - GET
-     - DAGs.can_read
+     - DAGs.can_read, HITL Detail.can_read
      - Viewer
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskGroupInstances/{group_id}``
      - PATCH
@@ -614,15 +614,15 @@ Stable API Permissions
      - User
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails``
      - GET
-     - DAGs.can_read
+     - DAGs.can_read, HITL Detail.can_read
      - Viewer
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails``
      - PATCH
-     - DAGs.can_edit
+     - DAGs.can_edit, HITL Detail.can_edit
      - User
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/hitlDetails/tries/{try_number}``
      - GET
-     - DAGs.can_read
+     - DAGs.can_read, HITL Detail.can_read
      - Viewer
    * - ``/api/v2/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/{map_index}/tries``
      - GET
@@ -700,6 +700,42 @@ Stable API Permissions
      - GET
      - None
      - Public
+   * - ``/api/v2/newsItems``
+     - GET
+     - Authenticated user
+     - Viewer
+   * - ``/api/v2/newsItems``
+     - POST
+     - News Feed.can_read
+     - Admin
+   * - ``/api/v2/newsItems/{news_item_id}``
+     - DELETE
+     - News Feed.can_read
+     - Admin
+   * - ``/api/v2/newsItems/{news_item_id}``
+     - GET
+     - Authenticated user
+     - Viewer
+   * - ``/api/v2/newsItems/{news_item_id}``
+     - PATCH
+     - News Feed.can_read
+     - Admin
+   * - ``/api/v2/newsSources``
+     - GET
+     - Authenticated user
+     - Viewer
+   * - ``/api/v2/newsSources``
+     - POST
+     - News Feed.can_read
+     - Admin
+   * - ``/api/v2/newsSources/{news_source_id}``
+     - DELETE
+     - News Feed.can_read
+     - Admin
+   * - ``/api/v2/newsSources/{news_source_id}``
+     - PATCH
+     - News Feed.can_read
+     - Admin
    * - ``/api/v2/parseDagFile/{file_token}``
      - PUT
      - DAGs.can_edit

@@ -2048,6 +2048,48 @@ api:
       type: boolean
       example: ~
       default: "False"
+    news_feed_enabled:
+      description: |
+        Show the News section on the home page of the Airflow UI and its Admin > News Feed menu entry.
+        The section lists the news items that administrators create there and, when an administrator
+        enables a remote source, the entries of that source. While ``False``, ``airflow news-feed sync``
+        fetches nothing; the REST API keeps working so that items can be prepared in advance.
+      version_added: 3.5.0
+      type: boolean
+      example: ~
+      default: "True"
+    news_feed_allow_remote_sources:
+      description: |
+        Allow administrators to enable remote news sources (for example the Apache Airflow blog feed)
+        under Admin > News Feed, which the ``airflow news-feed sync`` command then fetches from inside
+        the deployment and stores for the home page. Set this to ``False`` in air-gapped deployments,
+        or wherever the deployment must never contact external hosts; the sync command then syncs
+        nothing, the REST API refuses to create or enable sources and returns no remote entries, and
+        only the news items created by administrators are shown.
+      version_added: 3.5.0
+      type: boolean
+      example: ~
+      default: "True"
+    news_feed_allow_public_airflow_feeds:
+      description: |
+        Allow administrators to enable the public Apache Airflow feeds (the announcements page and the
+        blog, or an internal mirror of them) under Admin > News Feed. Set this to ``False`` to keep the
+        project feeds off the home page while other remote sources stay allowed; the sync command skips
+        them, and the REST API refuses to enable them and returns none of their entries. Has no effect
+        when ``news_feed_allow_remote_sources`` is ``False``.
+      version_added: 3.5.0
+      type: boolean
+      example: ~
+      default: "True"
+    news_feed_max_entries:
+      description: |
+        Maximum number of entries shown in the News section of the home page. Items created by
+        administrators fill the list first, by priority and then newest first; entries of remote
+        sources only take the remaining places and are the ones left out when the list is full.
+      version_added: 3.5.0
+      type: integer
+      example: ~
+      default: "20"
     client_ssl_cert:
       description: |
         Path to a PEM-encoded client SSL certificate to use

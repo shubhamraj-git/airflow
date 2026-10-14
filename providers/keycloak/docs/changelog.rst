@@ -38,6 +38,13 @@ Changelog
     resource and the ``AdminViewAccess`` permission and grant it to ``SuperAdmin``. Deployments
     without ``[core] multi_team`` are not affected.
 
+.. note::
+    Airflow 3.5.0 adds the ``News Feed`` menu item (Admin > News Feed). The auth manager checks every
+    menu item in one Keycloak request, so until the matching resource exists the menu lookup fails
+    for every user. After upgrading Airflow, run ``airflow keycloak-auth-manager create-resources``
+    and ``airflow keycloak-auth-manager create-permissions`` (with ``--teams`` where applicable) again
+    to create the resource and include it in the ``MenuAccess`` permission.
+
 Bug Fixes
 ~~~~~~~~~
 

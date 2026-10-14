@@ -286,6 +286,9 @@ class TestBuildResourceLabel:
     def test_view_with_entity(self):
         assert _build_resource_label("requires_access_view", "PLUGINS") == "View.PLUGINS"
 
+    def test_authenticated_has_no_entity(self):
+        assert _build_resource_label("requires_authenticated", None) == "Authenticated"
+
     def test_unknown_function_falls_back_to_fn_name(self):
         # If a new requires_access_* is added but not yet in the map, the
         # function name is used.  Tests will catch it via the coverage test.
@@ -457,6 +460,24 @@ class TestExtractFromFile:
         assert e.resource == "View.PLUGINS"
         assert e.required_permission == "PLUGINS"
 
+    def test_authenticated_only_route(self, tmp_path):
+        f = _make_route_file(
+            tmp_path,
+            """
+            from fastapi import Depends
+            news_feed_router = AirflowRouter(tags=["NewsFeed"])
+
+            @news_feed_router.get("/newsItems", dependencies=[Depends(requires_authenticated())])
+            def get_news_items(): ...
+            """,
+        )
+        entries = extract_from_file(f)
+        assert len(entries) == 1
+        e = entries[0]
+        assert e.full_path == "/api/v2/newsItems"
+        assert e.resource == "Authenticated"
+        assert e.required_permission == "any authenticated user"
+
     def test_no_dependencies_kwarg_extracted_as_public(self, tmp_path):
         f = _make_route_file(
             tmp_path,
@@ -584,7 +605,7 @@ class TestResourceMapCoverage:
             for node in ast.walk(tree):
                 if isinstance(node, ast.ImportFrom) and node.module and "security" in node.module:
                     for alias in node.names:
-                        if alias.name.startswith("requires_access"):
+                        if alias.name.startswith("requires_access") or alias.name == "requires_authenticated":
                             imported.add(alias.name)
         return imported
 
