@@ -60,6 +60,20 @@
     "timestamp": "Timestamp"
   },
   "managePools": "Manage Pools",
+  "news": {
+    "allNews": "News feed ({{count, number}})",
+    "empty": "No news yet",
+    "emptyUserHint": "Announcements and updates will appear here.",
+    "manage": "Manage News feed",
+    "newCount_one": "{{count, number}} new",
+    "newCount_other": "{{count, number}} new",
+    "showAll": "Show all ({{count, number}})",
+    "source": {
+      "thisDeployment": "This deployment"
+    },
+    "sourceUnreachable": "Configured {{labels}} links are not reachable.",
+    "title": "News feed"
+  },
   "noAssetEvents": "No Asset Events found.",
   "poolSlots": "Pool Slots",
   "sortBy": {

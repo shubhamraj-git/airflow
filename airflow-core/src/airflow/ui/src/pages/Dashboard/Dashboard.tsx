@@ -41,6 +41,7 @@ import { DashboardDeadlines } from "./Deadlines";
 import { FavoriteDags } from "./FavoriteDags";
 import { Health } from "./Health";
 import { HistoricalMetrics } from "./HistoricalMetrics";
+import { News, useNewsFeed } from "./News";
 import { PoolSummary } from "./PoolSummary";
 import { Stats } from "./Stats";
 
@@ -53,6 +54,7 @@ export const Dashboard = () => {
   useDocumentTitle(translate("common:nav.home"));
 
   const instanceName = useConfig("instance_name");
+  const newsFeed = useNewsFeed();
 
   const now = dayjs();
   const [startDate, setStartDate] = useState(now.subtract(Number(defaultHour), "hour").toISOString());
@@ -131,12 +133,36 @@ export const Dashboard = () => {
             ? instanceName
             : translate("welcome")}
         </Heading>
-        <Box order={3}>
-          <Stats />
-        </Box>
-        <Box order={4}>
-          <FavoriteDags />
-        </Box>
+        {newsFeed.isVisible ? (
+          // With news to show, stats and favorites form a left column and the feed takes the
+          // right column, exactly as tall as that column; everything from health on keeps the
+          // full width below.
+          <Box
+            display="grid"
+            gap={{ base: 6, lg: 8 }}
+            gridTemplateColumns={{ base: "1fr", lg: "minmax(0, 3fr) minmax(0, 2fr)" }}
+            order={3}
+          >
+            <VStack alignItems="stretch" gap={6}>
+              <Stats />
+              <FavoriteDags />
+            </VStack>
+            <Box minHeight={{ base: "auto", lg: 0 }} position="relative">
+              <Box data-testid="news-column" inset={0} position={{ base: "static", lg: "absolute" }}>
+                <News feed={newsFeed} />
+              </Box>
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Box order={3}>
+              <Stats />
+            </Box>
+            <Box order={4}>
+              <FavoriteDags />
+            </Box>
+          </>
+        )}
         <Box display="flex" flexDirection={{ base: "column", md: "row" }} gap={{ base: 4, md: 8 }} order={5}>
           <Health />
           <PoolSummary />

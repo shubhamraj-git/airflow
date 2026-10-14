@@ -56,6 +56,7 @@ vi.mock("./Deadlines", () => ({ DashboardDeadlines: () => null }));
 vi.mock("./FavoriteDags", () => ({ FavoriteDags: () => null }));
 vi.mock("./Health", () => ({ Health: () => null }));
 vi.mock("./HistoricalMetrics", () => ({ HistoricalMetrics: () => null }));
+vi.mock("./News", () => ({ News: () => null, useNewsFeed: () => ({ isVisible: false }) }));
 vi.mock("./PoolSummary", () => ({ PoolSummary: () => null }));
 vi.mock("./Stats", () => ({ Stats: () => null }));
 vi.mock("src/components/TimeRangeSelector", () => ({ default: () => null }));

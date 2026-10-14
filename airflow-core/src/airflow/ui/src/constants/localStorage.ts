@@ -40,6 +40,7 @@ export const DEFAULT_TASK_INSTANCE_TAB_KEY = "default_task_instance_tab";
 export const DEFAULT_LANDING_PAGE_KEY = "default_landing_page";
 export const DEFAULT_MATCH_ANYWHERE_KEY = "default_match_anywhere";
 export const DAGS_LIST_SHOW_RECENT_TASKS_KEY = "dags_list_show_recent_tasks";
+export const NEWS_FEED_SEEN_ENTRIES_KEY = "news_feed_seen_entries";
 
 // Dag-scoped keys
 export const dagRunsLimitKey = (dagId: string) => `dag_runs_limit-${dagId}`;
