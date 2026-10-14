@@ -45,6 +45,7 @@ Airflow 3 and includes:
 - **Quick links** to Dags filtered by status (e.g., Failed Dags, Running Dags, Active Dags)
 - **Dag and Task Instance history**, showing counts and success/failure rates over a selectable time range
 - **Recent asset events**, including materializations and triggered Dags
+- **News feed**, with entries written by administrators and, when enabled, from remote feeds such as the Apache Airflow blog
 
 This page is useful for quickly assessing the health of your environment and identifying recent issues or
 asset-triggered events.

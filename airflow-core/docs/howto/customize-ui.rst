@@ -372,3 +372,130 @@ cases might include alerts yielded from APIs, database queries or files.
 
     # Create an instance of the class
     DASHBOARD_UIALERTS = DynamicAlerts()
+
+Adding a News Feed to the Home Page
+===================================
+
+The home page can show a **News feed** section: a list of dated entries that administrators write for
+every user of the deployment, optionally merged with entries of remote feeds such as the Apache
+Airflow blog. Use it for planned maintenance, internal release notes or policy changes that are
+not urgent enough for a :ref:`dashboard alert <customizing-the-ui>` but should still reach everyone.
+
+The section is shown when :ref:`config:api__news_feed_enabled` is ``True`` (the default); with
+nothing to show it reads "No news yet" and that announcements and updates will appear there. On wide screens it takes a column to the right of the stats and favorite
+Dags, exactly as tall as they are; on narrow ones it follows them. Up to :ref:`config:api__news_feed_max_entries` entries (20 by default) are listed,
+by priority and then newest first, each as a card: who it is from and the publication time on the
+first line, the title (linked when the entry has a link) on the second, and the body below. A
+``P0`` (critical) card is red and a ``P1`` (important) card is amber, each with its priority
+badge; ``P2`` (normal) cards keep the neutral style. Entries from the public Apache Airflow feeds
+are shown as from *Apache Airflow* and are always ``P2``. The box shows as many cards as fit, and
+**Show all** opens every entry in a scrollable dialog. A badge next to the title counts the entries that appeared since the browser's previous
+visit.
+
+Writing news items
+------------------
+
+Users whose auth manager grants them the news feed management permission (the ``Admin`` role with
+the simple auth manager, the ``News Feed`` resource with the FAB auth manager) manage the feed
+under **Admin > News Feed**. A news item has a title, an optional *From* name such as a team
+(``author`` in the API; an item without one is shown as from this deployment), a priority
+(``P0``, ``P1`` or ``P2``, the default), an optional Markdown body, an optional link,
+a publication time (defaults to now; a future time schedules the item) and an expiry chosen from
+presets (1 day, 7 days, indefinite, or a custom time). Expired and not yet published items are
+hidden from the home page but stay editable on the admin page. Until the first item exists, the admin
+page explains the feature in place of the table.
+
+Items can also be created and maintained through the REST API, which is handy for automation such as
+posting release notes from a deployment pipeline:
+
+.. code-block:: bash
+
+    curl -X POST "http://localhost:8080/api/v2/newsItems" \
+      -H "Authorization: Bearer $TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "title": "Scheduler restart tonight",
+        "author": "Platform team",
+        "priority": "P1",
+        "body": "The scheduler restarts at **22:00 UTC**; running tasks are not affected.",
+        "url": "https://wiki.example.com/airflow/maintenance",
+        "expires_at": "2026-10-16T00:00:00Z"
+      }'
+
+Remote sources
+--------------
+
+The feed can additionally include remote **Atom** or **RSS** feeds. Their entries are not fetched
+by browsers: the ``airflow news-feed sync`` command fetches every enabled source from inside the
+deployment, reduces each entry to plain text and stores it as a news item, and records the
+outcome on the source. Each source has a sync interval, chosen when it is created or edited
+(5 minutes, 15 minutes, 1 hour, or a custom number of minutes of at least 5; 1 hour by default):
+a run fetches only the sources whose interval has passed since their last fetch. Schedule the
+command often, for example every minute from cron or a Kubernetes CronJob, with database access
+like any other Airflow CLI command; a run with nothing due contacts no host:
+
+.. code-block:: bash
+
+    airflow news-feed sync
+
+It exits with an error when a source failed, so a scheduler can alert on it. ``--force`` fetches
+every enabled source regardless of its interval, and ``--source-id`` fetches one source now.
+Each source also has a maximum number of entries (5, 10, 25, 50, or a custom number from 1 to
+100; 10 by default): the command keeps only the newest ones, and lowering the maximum removes the
+older stored entries at once. Changing a source's URL clears its last sync outcome and the entries stored
+from the old URL; the next run fetches the new one. The command refuses URLs that are not ``http(s)``, hosts that resolve to a
+loopback, private or link-local address, redirects, responses above 5 MiB and feeds carrying a
+DOCTYPE or entity declarations; it stores at most 100 entries per source. Stored entries expire
+according to the source's time-to-live (default 30 days) and disappear with the source.
+
+The *Public Airflow Feed* button shows whether the public feeds are on (at least one enabled) or off, and
+opens a dialog that lists each of them with its enabled state, URL, time-to-live, sync interval
+and the outcome of the last sync; once a feed is on, it is shown read-only until its edit button
+is clicked: the Apache Airflow announcements page
+(``https://airflow.apache.org/announcements/``, read as dated sections) and the Apache Airflow
+blog feed (``https://airflow.apache.org/blog/index.xml``). The URL of either feed can be replaced
+with an internal mirror, for deployments where the sync command cannot reach ``airflow.apache.org``.
+Other Atom or RSS feeds, such as an internal blog, are added with the *Remote sources* button next
+to it, which opens a dialog listing each source with its label, URL, time-to-live, enabled state
+and last sync outcome. Stored sources are shown read-only until their edit button is clicked, so
+nothing changes by accident, and the same agreement is asked before the first one is switched on.
+The REST API (``/api/v2/newsSources``) manages the same rows. Items written by administrators fill
+the list first; remote entries take the remaining places and are the ones left out when the limit
+is reached.
+
+.. warning::
+
+    Enabling a remote source makes the deployment contact that host whenever the sync command
+    runs. The public feeds are off by default; while saving the dialog would switch them on, it
+    explains this, lets the administrator choose the announcements and/or the blog, and its
+    confirm button reads *I agree, enable*. *Disable all* switches every public feed off at once.
+
+Air-gapped deployments
+^^^^^^^^^^^^^^^^^^^^^^
+
+Nothing is fetched from the internet unless an administrator enables a remote source and the sync
+command is scheduled, so an air-gapped deployment only needs to leave the public feeds off or not
+schedule the command. To make that a guarantee that administrators cannot change from the UI, set
+:ref:`config:api__news_feed_allow_remote_sources` to ``False``; the sync command then syncs
+nothing, the REST API refuses to create or enable sources (``403 Forbidden``) and returns no remote
+entries, and the home page shows only the items written by administrators:
+
+.. code-block:: ini
+
+    [api]
+    news_feed_allow_remote_sources = False
+
+Internal mirrors that the sync command can reach can still be used while the option is ``True``:
+enter the mirror's URL for the announcements or the blog instead of the official one.
+
+To keep the Apache Airflow feeds off the home page while other remote sources stay allowed, set
+:ref:`config:api__news_feed_allow_public_airflow_feeds` to ``False`` instead: the *Public Airflow
+Feed* button disappears, the sync command skips those feeds, the REST API refuses to enable them
+(``403 Forbidden``) and their stored entries are no longer returned. Disabling or deleting a source
+is always possible. While :ref:`config:api__news_feed_enabled` is ``False`` the sync command fetches
+nothing.
+
+When the last sync of an enabled source failed, the News section shows a one-line warning naming
+the source, an error icon marks the *Public Airflow Feed* or *Remote sources* button, and the
+dialogs show the error; the items written by administrators and the entries
+stored by earlier runs are shown regardless.
