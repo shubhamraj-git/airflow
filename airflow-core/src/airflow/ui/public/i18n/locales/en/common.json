@@ -2,6 +2,7 @@
   "admin": {
     "Config": "Config",
     "Connections": "Connections",
+    "News Feed": "News Feed",
     "Plugins": "Plugins",
     "Pools": "Pools",
     "Providers": "Providers",

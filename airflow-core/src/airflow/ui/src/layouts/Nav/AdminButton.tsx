@@ -24,6 +24,7 @@ import type { MenuItem } from "openapi/requests/types.gen";
 
 import { Menu } from "src/system-components";
 
+import { useConfig } from "src/queries/useConfig";
 import type { NavItemResponse } from "src/utils/types";
 
 import { NavButton } from "./NavButton";
@@ -54,6 +55,10 @@ const links = [
     href: "/configs",
     title: "Config",
   },
+  {
+    href: "/news_feed",
+    title: "News Feed",
+  },
 ];
 
 export const AdminButton = ({
@@ -64,7 +69,11 @@ export const AdminButton = ({
   readonly externalViews: Array<NavItemResponse>;
 }) => {
   const { t: translate } = useTranslation();
-  const authorizedLinks = links.filter(({ title }) => authorizedMenuItems.includes(title as MenuItem));
+  const isNewsFeedEnabled = Boolean(useConfig("news_feed_enabled"));
+  const authorizedLinks = links.filter(
+    ({ title }) =>
+      authorizedMenuItems.includes(title as MenuItem) && (title !== "News Feed" || isNewsFeedEnabled),
+  );
   const menuItems = authorizedLinks.map((link) => (
     <Menu.Item asChild key={link.title} value={link.title}>
       <RouterLink aria-label={translate(`admin.${link.title}`)} to={link.href}>

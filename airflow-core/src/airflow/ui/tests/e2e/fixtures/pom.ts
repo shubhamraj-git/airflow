@@ -40,6 +40,7 @@ import { DagsPage } from "../pages/DagsPage";
 import { EventsPage } from "../pages/EventsPage";
 import { GridPage } from "../pages/GridPage";
 import { HomePage } from "../pages/HomePage";
+import { NewsFeedPage } from "../pages/NewsFeedPage";
 import { PluginsPage } from "../pages/PluginsPage";
 import { PoolsPage } from "../pages/PoolsPage";
 import { ProvidersPage } from "../pages/ProvidersPage";
@@ -69,6 +70,7 @@ export type PomFixtures = {
   eventsPage: EventsPage;
   gridPage: GridPage;
   homePage: HomePage;
+  newsFeedPage: NewsFeedPage;
   pluginsPage: PluginsPage;
   poolsPage: PoolsPage;
   providersPage: ProvidersPage;
@@ -137,6 +139,9 @@ export const test = base.extend<PomFixtures, PomWorkerFixtures>({
   },
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
+  },
+  newsFeedPage: async ({ page }, use) => {
+    await use(new NewsFeedPage(page));
   },
   pluginsPage: async ({ page }, use) => {
     await use(new PluginsPage(page));

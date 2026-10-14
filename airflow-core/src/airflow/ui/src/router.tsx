@@ -54,6 +54,7 @@ import { Jobs } from "src/pages/Jobs";
 import { LandingPage } from "src/pages/LandingPage";
 import { MappedTaskInstance } from "src/pages/MappedTaskInstance";
 import { Details as MappedTaskInstanceDetails } from "src/pages/MappedTaskInstance/Details";
+import { NewsFeed } from "src/pages/NewsFeed";
 import { Plugins } from "src/pages/Plugins";
 import { Pools } from "src/pages/Pools";
 import { Providers } from "src/pages/Providers";
@@ -183,6 +184,10 @@ export const routerConfig = [
       {
         element: <Pools />,
         path: "pools",
+      },
+      {
+        element: <NewsFeed />,
+        path: "news_feed",
       },
       {
         element: <Providers />,

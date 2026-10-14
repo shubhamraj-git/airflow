@@ -44,6 +44,9 @@ export class HomePage extends BasePage {
   public readonly historicalMetricsSection: Locator;
   public readonly hitlReviewModal: HITLReviewModal;
   public readonly metaDatabaseHealth: Locator;
+  public readonly newsEntries: Locator;
+  public readonly newsSection: Locator;
+  public readonly newsSourceWarning: Locator;
   public readonly poolSummarySection: Locator;
   public readonly requiredActionsButton: Locator;
   public readonly runningDagsCard: Locator;
@@ -69,6 +72,9 @@ export class HomePage extends BasePage {
     // Navigate to parent via ".." since there are no ARIA landmark/region roles on these sections.
     this.statsSection = page.getByRole("heading", { name: "Stats" }).locator("..");
     this.healthSection = page.getByRole("heading", { name: "Health" }).locator("..");
+    this.newsSection = page.getByRole("heading", { name: "News feed" }).locator("..");
+    this.newsEntries = page.getByTestId("news-entry");
+    this.newsSourceWarning = page.getByText(/links are not reachable/u);
     this.hitlReviewModal = new HITLReviewModal(page);
     this.metaDatabaseHealth = page.getByText("Metadatabase").first();
     this.schedulerHealth = page.getByText("Scheduler").first();

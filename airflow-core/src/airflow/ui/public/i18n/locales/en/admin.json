@@ -101,6 +101,148 @@
     "job_one": "Job",
     "job_other": "Jobs"
   },
+  "newsFeed": {
+    "addItem": "Add new News",
+    "columns": {
+      "createdBy": "Created by",
+      "expires": "Expires",
+      "from": "From",
+      "priority": "Priority",
+      "published": "Published",
+      "status": "Status",
+      "title": "Title"
+    },
+    "deleteItem": {
+      "title": "Delete $t(newsFeed.item_one)",
+      "warning": "The item disappears from the home page of every user."
+    },
+    "editItem": "Edit $t(newsFeed.item_one)",
+    "emptyState": {
+      "addHint": "Add new News posts an item with a title, a sender, a priority, an optional link and Markdown body, a publication time and an expiry.",
+      "apiHint": "Items can also be created through the REST API, for example from a release pipeline.",
+      "body": "The News feed shows dated announcements on the home page of every user, by priority and then newest first, until they expire. Nothing is shown there yet.",
+      "disabledHint": "The home page section is turned off by configuration (news_feed_enabled); items are kept but not shown.",
+      "publicFeedsHint": "Public Airflow Feed adds the Apache Airflow announcements and blog, fetched by the scheduled sync command once you agree.",
+      "remoteSourcesHint": "Remote sources adds Atom or RSS feeds of your own, such as an internal blog; the sync command stores their entries as plain text.",
+      "title": "No news active"
+    },
+    "form": {
+      "body": "Body",
+      "bodyPlaceholder": "Write the news in Markdown",
+      "customDate": "Expires at",
+      "customDays": "Days",
+      "customEntries": "Entries",
+      "customMinutes": "Minutes",
+      "expires": "Expires",
+      "expiresBeforePublished": "Expiry must be after the publication time",
+      "from": "From",
+      "fromHint": "Shown with the item on the home page, for example a team name; left empty, the item is from this deployment.",
+      "fromMaxLength": "From can contain a maximum of 250 characters",
+      "fromPlaceholder": "e.g. Platform team",
+      "invalidUrl": "Must start with http:// or https://",
+      "link": "Link",
+      "maxEntries": "Show up to",
+      "maxEntriesRange": "Must be between {{min}} and {{max}}.",
+      "priority": "Priority",
+      "publishedAt": "Published at",
+      "syncInterval": "Sync every",
+      "title": "Title",
+      "titleMaxLength": "Title can contain a maximum of 250 characters",
+      "titleRequired": "Title is required",
+      "ttl": "Keep entries for",
+      "url": "Feed URL"
+    },
+    "item_one": "News item",
+    "item_other": "News items",
+    "items": {
+      "noRowsMessage": "No news items yet"
+    },
+    "presets": {
+      "custom": "Custom",
+      "fifteenMinutes": "15 minutes",
+      "fiftyEntries": "50 entries",
+      "fiveEntries": "5 entries",
+      "fiveMinutes": "5 minutes",
+      "indefinite": "Indefinite",
+      "oneDay": "1 day",
+      "oneHour": "1 hour",
+      "sevenDays": "7 days",
+      "tenEntries": "10 entries",
+      "thirtyDays": "30 days",
+      "twentyFiveEntries": "25 entries"
+    },
+    "priority": {
+      "P0": "P0 (critical)",
+      "P1": "P1 (important)",
+      "P2": "P2 (normal)"
+    },
+    "remoteSources": {
+      "add": "Add source",
+      "builtInUrl": "This is a public Apache Airflow feed; manage it with the Public Airflow Feed button",
+      "days_one": "{{count, number}} day",
+      "days_other": "{{count, number}} days",
+      "dialog": {
+        "intro": "Atom or RSS feeds fetched by the airflow news-feed sync command, which the deployment schedules, for example with cron or a Kubernetes CronJob. Their entries are stored and shown as plain text, newest first, within each source's time-to-live.",
+        "title": "Remote sources"
+      },
+      "disabled": "Disabled",
+      "duplicateUrl": "This URL is already listed",
+      "edit": "Edit source",
+      "empty": "No remote sources yet. Add one below.",
+      "enabled": "Enabled",
+      "entries_one": "{{count, number}} entry",
+      "entries_other": "{{count, number}} entries",
+      "label": "Label",
+      "labelRequired": "Label is required",
+      "minutes_one": "{{count, number}} minute",
+      "minutes_other": "{{count, number}} minutes",
+      "name": "Remote sources",
+      "remove": "Remove source",
+      "status": {
+        "off": "Off",
+        "on": "On"
+      },
+      "title": "Remote sources"
+    },
+    "sources": {
+      "builtIn": {
+        "announcements": "Announcements",
+        "blog": "Blog"
+      },
+      "consent": {
+        "airGapped": "Do not enable this where the sync command cannot reach the internet; point the feed at an internal mirror instead.",
+        "body": "When enabled, the scheduled airflow news-feed sync command fetches these feed URLs from inside the deployment and stores their entries as news items. Browsers never contact the feeds.",
+        "confirm": "I agree, enable",
+        "title": "The deployment will fetch these feeds"
+      },
+      "dialog": {
+        "title": "Public Apache Airflow feeds"
+      },
+      "disableAll": "Disable all",
+      "editFeed": "Edit feed",
+      "fetchStatus": {
+        "failed": "Last sync failed: {{error}}",
+        "lastSynced": "Last synced",
+        "never": "Not synced yet; entries appear once airflow news-feed sync has run."
+      },
+      "maxEntriesHint": "The home page shows up to {{maxTotal, number}} entries; your own items fill it first and remote entries take the remaining places.",
+      "mirrorHint": "Replace the URL with an internal mirror when browsers cannot reach airflow.apache.org.",
+      "publicFeeds": "Public Airflow Feed",
+      "publicFeedsName": "Public Apache Airflow feeds",
+      "status": {
+        "off": "Off",
+        "on": "On"
+      },
+      "syncFailed_one": "{{count, number}} source failed its last sync",
+      "syncFailed_other": "{{count, number}} sources failed their last sync"
+    },
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "scheduled": "Scheduled"
+    },
+    "title": "News feed"
+  },
   "plugins": {
     "columns": {
       "source": "Source"
